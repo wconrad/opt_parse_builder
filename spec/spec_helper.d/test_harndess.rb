@@ -3,34 +3,51 @@ require "stringio"
 class TestHarness
 
   attr_writer :args
-  attr_reader :stdout
 
   def initialize(args = nil)
     @args = args
   end
 
+  def output
+    @output.string
+  end
+
   def parse!(argv)
-    system_exit = false
-    @stdout = capture_stdout do
-      begin
-        @args.parse!(argv)
-      rescue SystemExit
-        system_exit = true
+    status = nil
+    @output = StringIO.new
+    capture_stdout do
+      capture_stderr do
+        begin
+          @args.parse!(argv)
+        rescue SystemExit => e
+          status = e.status
+        end
       end
     end
-    @stdout += "(exit)\n" if system_exit
+    if status
+      @output.puts "(exit #{status})\n"
+    end
   end
 
   private
 
   def capture_stdout
     orig_stdout = $stdout
-    $stdout = StringIO.new
+    $stdout = @output
     begin
       yield
-      $stdout.string
     ensure
       $stdout = orig_stdout
+    end
+  end
+
+  def capture_stderr
+    orig_stderr = $stderr
+    $stderr = @output
+    begin
+      yield
+    ensure
+      $stderr = orig_stderr
     end
   end
   
