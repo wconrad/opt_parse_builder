@@ -98,3 +98,9 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+$:.prepend(File.join(__dir__, "../lib"))
+
+Dir[File.join(__dir__, "spec_helper.d", "*.rb")].each do |path|
+  require path
+end
