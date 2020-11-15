@@ -2,13 +2,11 @@ require "composable_arguments"
 
 describe "integration tests" do
 
-  include ComposableArguments
-
   let(:test_harness) { TestHarness.new }
   
   describe "Minimal" do
 
-    let(:args) { ComposableArguments.build }
+    let(:args) { ComposableArguments.new }
 
     it "prints help" do
       test_harness.args = args
@@ -32,6 +30,25 @@ describe "integration tests" do
       OUTPUT
     end
 
+  end
+
+  describe "Simple option" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.on "-f", "--foo", "Do the foo thing"
+      end
+    end
+
+    it "prints help" do
+      skip
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+      OUTPUT
+    end
+    
   end
 
 end

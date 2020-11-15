@@ -1,9 +1,26 @@
-require_relative "composable_arguments/arguments"
+class ComposableArguments
 
-module ComposableArguments
+  def initialize
+    @arguments = {}
+  end
 
-  def self.build
-    Arguments.new
+  def parse!(argv)
+    begin
+      op = optparse
+      op.parse!(argv)
+      unless argv.empty?
+        raise OptionParser::NeedlessArgument, argv.first
+      end
+    rescue OptionParser::ParseError => e
+      abort e.message
+    end
+  end
+
+  private
+
+  def optparse
+    op = OptParse.new
+    op
   end
 
 end
