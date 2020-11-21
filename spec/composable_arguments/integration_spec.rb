@@ -32,7 +32,44 @@ describe "integration tests" do
 
   end
 
-  describe "Simple option" do
+  describe "Simple option (switch), no default" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.on "-f", "--foo", "Do the foo thing"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+            -f, --foo                        Do the foo thing
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is nil before parsing" do
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is nil after parsing when not selected" do
+      args.parse!([])
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is true after parsing when selected" do
+      args.parse!(["-f"])
+      expect(args[:foo]).to eq true
+    end
+    
+  end
+
+  describe "Simple option (switch) with default" do
 
     let(:args) do
       args = ComposableArguments.new
@@ -68,6 +105,9 @@ describe "integration tests" do
       expect(args[:foo]).to eq true
     end
     
+  end
+
+  describe "option with value" do
   end
 
 end
