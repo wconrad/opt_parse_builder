@@ -1,4 +1,5 @@
 require_relative "composable_arguments/argument_builder"
+require_relative "composable_arguments/argument_values"
 require_relative "composable_arguments/option"
 
 class ComposableArguments
@@ -34,7 +35,15 @@ class ComposableArguments
   end
 
   def [](key)
-    @arguments.fetch(key).value
+    @arguments.fetch(key.to_sym).value
+  end
+
+  def values
+    r = ArgumentValues.new
+    @arguments.each do |key, arg|
+      r[key] = arg.value
+    end
+    r
   end
 
   private

@@ -66,7 +66,7 @@ describe "integration tests" do
       args.parse!(["-f"])
       expect(args[:foo]).to eq true
     end
-    
+
   end
 
   describe "Simple option (switch) with default" do
@@ -243,6 +243,67 @@ describe "integration tests" do
       OUTPUT
     end
     
+  end
+
+  describe "accessing values in the ComposableArguments" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.default "foo"
+      end
+      args
+    end
+
+    it "can be accessed like a hash, with a string key" do
+      expect(args["foo"]).to eq "foo"
+    end
+
+    it "can be accessed like a hash, with a symbol key" do
+      expect(args[:foo]).to eq "foo"
+    end
+
+  end
+
+  describe "accessing values in a value collection" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.default "foo"
+      end
+      args
+    end
+    let(:arg_values) {args.values}
+
+    it "can be accessed like a struct" do
+      expect(arg_values.foo).to eq "foo"
+    end
+
+    it "can be accessed like a hash, with a symbol key" do
+      expect(arg_values[:foo]).to eq "foo"
+    end
+
+    it "can be accessed like a hash, with a string key" do
+      expect(arg_values["foo"]).to eq "foo"
+    end
+
+    it "reports that a key exists" do
+      expect(arg_values.has_key?("foo")).to be_truthy
+    end
+
+    it "reports that a key does not exist" do
+      expect(arg_values.has_key?("bar")).to be_falsey
+    end
+
+    it "errors when accessing an unknown key like a struct" do
+      expect do
+        arg_values.bar
+      end.to raise_error NoMethodError, /\bbar\b/
+    end
+
   end
 
 end
