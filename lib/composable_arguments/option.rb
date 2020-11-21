@@ -12,7 +12,7 @@ class ComposableArguments
     end
 
     def apply_option(op)
-      op.on(*@on) do |v|
+      op.on(*edited_on) do |v|
         @value = v
       end
     end
@@ -21,6 +21,16 @@ class ComposableArguments
 
     def reset
       @value = @default
+    end
+
+    def edited_on
+      @on.map do |s|
+        if s.respond_to?(:gsub!)
+          s.gsub(/_DEFAULT_/, @default.to_s)
+        else
+          s
+        end
+      end
     end
     
   end

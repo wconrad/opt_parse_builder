@@ -151,7 +151,7 @@ describe "integration tests" do
       args.add do |arg|
         arg.key :foo
         arg.default "default"
-        arg.on "--foo=VALUE", "--foo", "Set foo to VALUE"
+        arg.on "--foo=VALUE", "--foo", "Set foo to VALUE (_DEFAULT_)"
       end
       args
     end
@@ -161,7 +161,7 @@ describe "integration tests" do
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
-                --foo=VALUE                  Set foo to VALUE
+                --foo=VALUE                  Set foo to VALUE (default)
         (exit 0)
       OUTPUT
     end
@@ -181,5 +181,6 @@ describe "integration tests" do
     end
     
   end
+
 
 end
