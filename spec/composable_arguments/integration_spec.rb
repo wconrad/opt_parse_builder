@@ -113,7 +113,7 @@ describe "integration tests" do
       args = ComposableArguments.new
       args.add do |arg|
         arg.key :foo
-        arg.on "--foo=VALUE", "--foo", "Set foo to VALUE"
+        arg.on "--foo=VALUE", "Set foo to VALUE"
       end
       args
     end
@@ -151,7 +151,7 @@ describe "integration tests" do
       args.add do |arg|
         arg.key :foo
         arg.default "default"
-        arg.on "--foo=VALUE", "--foo", "Set foo to VALUE (_DEFAULT_)"
+        arg.on "--foo=VALUE", "Set foo to VALUE (_DEFAULT_)"
       end
       args
     end
@@ -182,5 +182,43 @@ describe "integration tests" do
     
   end
 
+  describe "Option with value, specified over multiple lines" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.on "--foo=INT"
+        arg.on Integer
+        arg.on "Set foo to INT"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+                --foo=INT                    Set foo to INT
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is nil before parsing" do
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is nil after parsing when not set" do
+      args.parse!([])
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is the appropriate value when set" do
+      args.parse!(["--foo=123"])
+      expect(args[:foo]).to eq 123
+    end
+    
+  end
 
 end
