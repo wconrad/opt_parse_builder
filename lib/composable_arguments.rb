@@ -51,12 +51,19 @@ class ComposableArguments
 
   def optparse
     op = OptParse.new
+    op.banner = banner_prefix + op.banner
     @arguments.values.each { |arg| arg.apply_option(op) }
     op
   end
 
   def add_argument(argument)
     @arguments[argument.key] = argument
+  end
+
+  def banner_prefix
+    @arguments.values.map(&:banner_lines).flatten.map do |line|
+      line + "\n"
+    end.join
   end
 
 end

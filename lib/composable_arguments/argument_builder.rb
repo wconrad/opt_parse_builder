@@ -5,6 +5,7 @@ class ComposableArguments
       @key = nil
       @defualt = nil
       @on = []
+      @banner_lines = []
     end
 
     def key(v)
@@ -19,9 +20,13 @@ class ComposableArguments
       @on.concat(option_args)
     end
 
+    def banner(line)
+      @banner_lines << line
+    end
+
     def argument
       if @on.empty?
-        Constant.new(@key, @default)
+        Constant.new(@key, @default, @banner_lines)
       else
         Option.new(@key, @default, @on)
       end

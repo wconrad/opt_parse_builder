@@ -17,6 +17,10 @@ class ComposableArguments
       end
     end
 
+    def banner_lines
+      []
+    end
+
     private
 
     def reset

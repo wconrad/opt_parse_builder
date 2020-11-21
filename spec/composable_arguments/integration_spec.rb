@@ -62,7 +62,7 @@ describe "integration tests" do
 
   end
 
-  describe "Argument with only a default" do
+  describe "Argument with only a key and default" do
 
     let(:args) do
       args = ComposableArguments.new
@@ -89,6 +89,30 @@ describe "integration tests" do
     it "is default after parsing" do
       args.parse!([])
       expect(args[:foo]).to eq "foo"
+    end
+
+  end
+
+  describe "Argument with only banner text" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.banner "Some banner text"
+        arg.banner "Some more banner text"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Some banner text
+        Some more banner text
+        Usage: rspec [options]
+        (exit 0)
+      OUTPUT
     end
 
   end
@@ -365,6 +389,17 @@ describe "integration tests" do
       end.to raise_error NoMethodError, /\bbar\b/
     end
 
+  end
+
+  describe "argument no key" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+      end
+      args
+    end
+    
   end
 
 end
