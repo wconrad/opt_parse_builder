@@ -242,38 +242,21 @@ describe "integration tests" do
         (exit 0)
       OUTPUT
     end
+
+    it "is nil before parsing" do
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is nil after parsing when not selected" do
+      args.parse!([])
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is true after parsing when selected" do
+      args.parse!(["-f"])
+      expect(args[:foo]).to eq true
+    end
     
-  end
-
-  describe "access argument via method" do
-
-    let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.default "foo"
-      end
-      args.add do |arg|
-        arg.key :add
-        arg.default "add"
-      end
-      args
-    end
-
-    it "is accessible" do
-      expect(args.foo).to eq "foo"
-    end
-
-    it "access a key named 'add' (a public method)" do
-      expect(args.add).to eq "add"
-    end
-
-    it "errors on a non-existent key" do
-      expect do
-        args.bar
-      end.to raise_error(NoMethodError, /\bbar\b/)
-    end
-
   end
 
 end
