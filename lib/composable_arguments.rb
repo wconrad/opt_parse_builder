@@ -3,6 +3,12 @@ require_relative "composable_arguments/option"
 
 class ComposableArguments
 
+  def self.build_argument
+    builder = ArgumentBuilder.new
+    yield builder
+    builder.argument
+  end
+
   def initialize
     @arguments = {}
   end
@@ -19,10 +25,12 @@ class ComposableArguments
     end
   end
 
-  def add
-    builder = ArgumentBuilder.new
-    yield builder
-    add_argument builder.argument
+  def add(arg = nil, &block)
+    if arg
+      add_argument(arg)
+    else
+      add_argument(self.class.build_argument(&block))
+    end
   end
 
   def [](key)

@@ -221,4 +221,42 @@ describe "integration tests" do
     
   end
 
+  describe "Build argument separately" do
+
+    let(:args) do
+      arg = ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.on "-f", "--foo", "Do the foo thing"
+      end
+      args = ComposableArguments.new
+      args.add arg
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+            -f, --foo                        Do the foo thing
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is nil before parsing" do
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is nil after parsing when not selected" do
+      args.parse!([])
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is true after parsing when selected" do
+      args.parse!(["-f"])
+      expect(args[:foo]).to eq true
+    end
+    
+  end
+
 end
