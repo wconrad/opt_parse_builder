@@ -8,6 +8,10 @@ class ComposableArguments
       @h = {}
     end
 
+    def empty?
+      @h.empty?
+    end
+
     def has_key?(key)
       @h.has_key?(key.to_sym)
     end

@@ -416,7 +416,7 @@ describe "integration tests" do
 
   end
 
-  describe "argument no key" do
+  describe "bare argument" do
     
     let(:args) do
       args = ComposableArguments.new
@@ -424,7 +424,20 @@ describe "integration tests" do
       end
       args
     end
-    
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+        (exit 0)
+      OUTPUT
+    end
+
+    it "has no values" do
+      expect(args.values).to be_empty
+    end
+
   end
 
 end

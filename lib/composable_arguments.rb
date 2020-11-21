@@ -1,6 +1,8 @@
 require_relative "composable_arguments/argument_builder"
 require_relative "composable_arguments/argument_values"
+require_relative "composable_arguments/banner_argument"
 require_relative "composable_arguments/constant"
+require_relative "composable_arguments/null_argument"
 require_relative "composable_arguments/option"
 
 class ComposableArguments
@@ -12,7 +14,8 @@ class ComposableArguments
   end
 
   def initialize
-    @arguments = {}
+    @arguments = []
+    @keys = {}
   end
 
   def parse!(argv)
@@ -36,12 +39,12 @@ class ComposableArguments
   end
 
   def [](key)
-    @arguments.fetch(key.to_sym).value
+    @keys.fetch(key.to_sym).value
   end
 
   def values
     r = ArgumentValues.new
-    @arguments.each do |key, arg|
+    @keys.each do |key, arg|
       r[key] = arg.value
     end
     r
@@ -52,16 +55,19 @@ class ComposableArguments
   def optparse
     op = OptParse.new
     op.banner = banner_prefix + op.banner
-    @arguments.values.each { |arg| arg.apply_option(op) }
+    @arguments.each { |arg| arg.apply_option(op) }
     op
   end
 
   def add_argument(argument)
-    @arguments[argument.key] = argument
+    @arguments << argument
+    if argument.respond_to?(:key)
+      @keys[argument.key] = argument
+    end
   end
 
   def banner_prefix
-    @arguments.values.map(&:banner_lines).flatten.map do |line|
+    @arguments.map(&:banner_lines).flatten.map do |line|
       line + "\n"
     end.join
   end

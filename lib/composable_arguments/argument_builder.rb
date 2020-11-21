@@ -3,7 +3,7 @@ class ComposableArguments
 
     def initialize
       @key = nil
-      @defualt = nil
+      @default = nil
       @on = []
       @banner_lines = []
     end
@@ -26,7 +26,13 @@ class ComposableArguments
 
     def argument
       if @on.empty?
-        Constant.new(@key, @default, @banner_lines)
+        if @key
+          Constant.new(@key, @default, @banner_lines)
+        elsif !@banner_lines.empty?
+          BannerArgument.new(@banner_lines)
+        else
+          NullArgument.new
+        end
       else
         Option.new(@key, @default, @on, @banner_lines)
       end
