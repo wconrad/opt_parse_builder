@@ -20,7 +20,11 @@ class ComposableArguments
     end
 
     def argument
-      Option.new(@key, @default, @on)
+      if @on.empty?
+        Constant.new(@key, @default)
+      else
+        Option.new(@key, @default, @on)
+      end
     end
 
   end

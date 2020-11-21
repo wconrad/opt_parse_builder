@@ -32,6 +32,37 @@ describe "integration tests" do
 
   end
 
+  describe "Argument with only a default" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.default "foo"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is default before parsing" do
+      expect(args[:foo]).to eq "foo"
+    end
+
+    it "is default after parsing" do
+      args.parse!([])
+      expect(args[:foo]).to eq "foo"
+    end
+
+  end
+
   describe "Simple option (switch), no default" do
 
     let(:args) do

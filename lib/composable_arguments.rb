@@ -1,5 +1,6 @@
 require_relative "composable_arguments/argument_builder"
 require_relative "composable_arguments/argument_values"
+require_relative "composable_arguments/constant"
 require_relative "composable_arguments/option"
 
 class ComposableArguments
