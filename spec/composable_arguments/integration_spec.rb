@@ -242,20 +242,6 @@ describe "integration tests" do
         (exit 0)
       OUTPUT
     end
-
-    it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
-    end
-
-    it "is nil after parsing when not selected" do
-      args.parse!([])
-      expect(args[:foo]).to be_nil
-    end
-
-    it "is true after parsing when selected" do
-      args.parse!(["-f"])
-      expect(args[:foo]).to eq true
-    end
     
   end
 
