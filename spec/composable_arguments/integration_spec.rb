@@ -93,7 +93,7 @@ describe "integration tests" do
 
   end
 
-  describe "Argument with only banner text" do
+  describe "Banner only" do
 
     let(:args) do
       args = ComposableArguments.new
@@ -111,6 +111,31 @@ describe "integration tests" do
         Some banner text
         Some more banner text
         Usage: rspec [options]
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "Option with banner" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.on "-f", "--foo", "Do the foo thing"
+        arg.banner "Banner text for foo"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Banner text for foo
+        Usage: rspec [options]
+            -f, --foo                        Do the foo thing
         (exit 0)
       OUTPUT
     end

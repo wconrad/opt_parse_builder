@@ -28,7 +28,7 @@ class ComposableArguments
       if @on.empty?
         Constant.new(@key, @default, @banner_lines)
       else
-        Option.new(@key, @default, @on)
+        Option.new(@key, @default, @on, @banner_lines)
       end
     end
 

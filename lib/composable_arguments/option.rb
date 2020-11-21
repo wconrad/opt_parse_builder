@@ -3,11 +3,13 @@ class ComposableArguments
 
     attr_reader :key
     attr_reader :value
+    attr_reader :banner_lines
 
-    def initialize(key, default, on)
+    def initialize(key, default, on, banner_lines)
       @key = key
-      @on = on
       @default = default
+      @on = on
+      @banner_lines = banner_lines
       reset
     end
 
@@ -15,10 +17,6 @@ class ComposableArguments
       op.on(*edited_on) do |v|
         @value = v
       end
-    end
-
-    def banner_lines
-      []
     end
 
     private
