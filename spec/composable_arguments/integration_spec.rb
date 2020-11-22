@@ -801,6 +801,69 @@ describe "integration tests" do
 
   end
 
+  describe "Splat operand" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.splat_operand
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] [<foo>...]
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is nil before parsing" do
+      expect(args[:foo]).to be_nil
+    end
+
+    it "accepts no arguments" do
+      args.parse!([])
+      expect(args[:foo]).to eq []
+    end
+
+    it "accepts one argument" do
+      args.parse!(["foo"])
+      expect(args[:foo]).to eq ["foo"]
+    end
+
+    it "accepts two arguments" do
+      args.parse!(["foo", "bar"])
+      expect(args[:foo]).to eq ["foo", "bar"]
+    end
+    
+  end
+
+  describe "Splat operand with specific help name" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.splat_operand help_name: "the foo"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] [<the foo>...]
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
   it "consumes argv" do
     args = ComposableArguments.new
     args.add do |arg|
@@ -811,7 +874,11 @@ describe "integration tests" do
       arg.key :bar
       arg.optional_operand
     end
-    argv = ["--foo", "bar"]
+    args.add do |arg|
+      arg.key :baz
+      arg.splat_operand
+    end
+    argv = ["--foo", "bar", "baz", "quux"]
     args.parse!(argv)
     expect(argv).to be_empty
   end

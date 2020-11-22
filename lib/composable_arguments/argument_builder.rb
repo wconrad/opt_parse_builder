@@ -41,6 +41,11 @@ class ComposableArguments
       @operand_help_name = help_name
     end
 
+    def splat_operand(help_name: nil)
+      @operand = :splat
+      @operand_help_name = help_name
+    end
+
     def argument
       bundle = ArgumentBundle.new
       unless @banner_lines.empty?
@@ -65,6 +70,12 @@ class ComposableArguments
           bundle << RequiredOperandArgument.new(
             @key,
             @defualt,
+            @operand_help_name,
+          )
+        when :splat
+          bundle << SplatOperandArgument.new(
+            @key,
+            @default,
             @operand_help_name,
           )
         else
