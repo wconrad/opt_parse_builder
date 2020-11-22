@@ -53,8 +53,6 @@ class ComposableArguments
         else
           if @key || @default
             bundle << ConstantArgument.new(@key, @default)
-          else
-            bundle << NullArgument.new
           end
         end
       else
