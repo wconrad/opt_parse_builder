@@ -5,8 +5,15 @@ class ComposableArguments
       @argument_bundle = ArgumentBundle.new
     end
 
-    def add(&block)
-      @argument_bundle << ComposableArguments.build_argument(&block)
+    def add(argument = nil, &block)
+      unless argument.nil? ^ block.nil?
+        raise BuildError, "Need exactly 1 of arg and block"
+      end
+      if argument
+        @argument_bundle << argument
+      else
+        @argument_bundle << ComposableArguments.build_argument(&block)
+      end
     end
 
     def argument

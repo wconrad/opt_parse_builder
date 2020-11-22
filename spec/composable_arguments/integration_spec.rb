@@ -1,5 +1,9 @@
 require "composable_arguments"
 
+# Tests that rely on on the public interface.  Changes to the library
+# which require a change to this test are typically breaking changes
+# and cause the major version number to increment.
+
 describe "integration tests" do
 
   let(:test_harness) { TestHarness.new }
@@ -491,7 +495,7 @@ describe "integration tests" do
 
   end
 
-  describe "Build and add argument bundle" do
+  describe "Build and add argument bundle (syntax 1)" do
 
     let(:args) do
       bundle = ComposableArguments.build_bundle do |bundler|
@@ -516,6 +520,64 @@ describe "integration tests" do
         Usage: rspec [options]
         (exit 0)
       OUTPUT
+    end
+    
+  end
+
+  describe "Build and add argument bundle (syntax 2)" do
+
+    let(:args) do
+      arg1 = ComposableArguments.build_argument do |arg|
+        arg.banner "A banner line"
+      end
+      arg2 = ComposableArguments.build_argument do |arg|
+        arg.banner "Another banner line"
+      end
+      bundle = ComposableArguments.build_bundle do |bundler|
+        bundler.add arg1
+        bundler.add arg2
+      end
+      args = ComposableArguments.new
+      args.add bundle
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        A banner line
+        Another banner line
+        Usage: rspec [options]
+        (exit 0)
+      OUTPUT
+    end
+    
+  end
+
+  describe "Build and add argument bundle (build errors)" do
+
+    it "is an error if neither an argument nor a block is supplied" do
+      expect do
+        ComposableArguments.build_bundle do |bundler|
+          bundler.add
+        end
+      end.to raise_error(ComposableArguments::BuildError,
+                         "Need exactly 1 of arg and block")
+    end
+
+    it "is an error if both an argument and a block is supplied" do
+      expect do
+        arg1 = ComposableArguments.build_argument do |arg|
+          arg.banner "A banner line"
+        end
+        ComposableArguments.build_bundle do |bundler|
+          bundler.add(arg1) do |arg|
+            arg.banner "Another banner line"
+          end
+        end
+      end.to raise_error(ComposableArguments::BuildError,
+                         "Need exactly 1 of arg and block")
     end
     
   end
