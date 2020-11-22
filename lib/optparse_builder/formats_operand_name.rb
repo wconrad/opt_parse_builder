@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
   module FormatsOperandName
 
     def format_operand_name(s)

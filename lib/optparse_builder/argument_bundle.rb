@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
   class ArgumentBundle < Argument
 
     def initialize

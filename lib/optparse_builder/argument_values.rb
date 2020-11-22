@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
 
   # Pretty like like OpenStruct, but raises an error if you try to
   # access a value that has not been set.

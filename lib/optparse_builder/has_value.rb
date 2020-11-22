@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
   module HasValue
 
     attr_reader :key

@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
   class BannerArgument < Argument
 
     attr_reader :banner_lines

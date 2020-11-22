@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
   class ArgumentBundleBuilder
 
     def initialize
@@ -12,7 +12,7 @@ class ComposableArguments
       if argument
         @argument_bundle << argument
       else
-        @argument_bundle << ComposableArguments.build_argument(&block)
+        @argument_bundle << OptparseBuilder.build_argument(&block)
       end
     end
 

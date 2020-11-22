@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
   class SeparatorArgument < Argument
 
     attr_reader :separator_lines

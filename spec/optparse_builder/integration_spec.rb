@@ -1,4 +1,4 @@
-require "composable_arguments"
+require "optparse_builder"
 
 # Tests that rely only on the public interface.  Changes to the
 # library which require a change to an existing test are typically
@@ -10,7 +10,7 @@ describe "integration tests" do
   
   describe "Minimal" do
 
-    let(:args) { ComposableArguments.new }
+    let(:args) { OptparseBuilder.new }
 
     it "prints help" do
       test_harness.args = args
@@ -39,7 +39,7 @@ describe "integration tests" do
   describe "Add argument to existing arguments" do
 
     let(:args) do
-      args = ComposableArguments.new
+      args = OptparseBuilder.new
       args.add do |arg|
         arg.key :foo
         arg.on "--foo"
@@ -62,7 +62,7 @@ describe "integration tests" do
   describe "Argument with only a key" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
         end
@@ -92,7 +92,7 @@ describe "integration tests" do
   describe "Argument with string key" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key "foo"
         end
@@ -122,7 +122,7 @@ describe "integration tests" do
   describe "Argument with only a key and default" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.default "foo"
@@ -153,7 +153,7 @@ describe "integration tests" do
   describe "Argument with a key, a default, and a banner line" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.default "foo"
@@ -186,7 +186,7 @@ describe "integration tests" do
   describe "Banner outside of an argument" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.banner "Some banner text"
         args.banner "Some more banner text"
       end
@@ -207,7 +207,7 @@ describe "integration tests" do
   describe "Banner only" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.banner "Some banner text"
           arg.banner "Some more banner text"
@@ -231,7 +231,7 @@ describe "integration tests" do
   describe "Separator outside of an argument" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.separator "Text at the end"
         args.separator "More text at the end"
       end
@@ -252,7 +252,7 @@ describe "integration tests" do
   describe "Separator only" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.separator "Text at the end"
           arg.separator "More text at the end"
@@ -276,7 +276,7 @@ describe "integration tests" do
   describe "Option with banner" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
@@ -301,7 +301,7 @@ describe "integration tests" do
   describe "Option with separator" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
@@ -326,7 +326,7 @@ describe "integration tests" do
   describe "Simple option (switch), no default" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
@@ -363,7 +363,7 @@ describe "integration tests" do
   describe "Simple option (switch) with default" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.default false
@@ -401,7 +401,7 @@ describe "integration tests" do
   describe "Option with value, no default" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "--foo=VALUE", "Set foo to VALUE"
@@ -438,7 +438,7 @@ describe "integration tests" do
   describe "Option with value, with default" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.default "default"
@@ -476,7 +476,7 @@ describe "integration tests" do
   describe "Option with value, specified over multiple lines" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "--foo=INT"
@@ -514,25 +514,25 @@ describe "integration tests" do
 
   specify "Option must have a key" do
     expect do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.on "-f", "--foo", "Do the foo thing"
         end
       end
-    end.to raise_error(ComposableArguments::BuildError, /requires a key/)
+    end.to raise_error(OptparseBuilder::BuildError, /requires a key/)
   end
 
   specify "Default must have a key" do
-    args = ComposableArguments.new
+    args = OptparseBuilder.new
     expect do
       args.add do |arg|
         arg.default 123
       end
-    end.to raise_error(ComposableArguments::BuildError, /requires a key/)
+    end.to raise_error(OptparseBuilder::BuildError, /requires a key/)
   end
 
   it "is an error if a key is duplicated" do
-    args = ComposableArguments.new
+    args = OptparseBuilder.new
     args.add do |arg|
       arg.key :foo
     end
@@ -540,17 +540,17 @@ describe "integration tests" do
       args.add do |arg|
         arg.key :foo
       end
-    end.to raise_error(ComposableArguments::BuildError, "duplicate key foo")
+    end.to raise_error(OptparseBuilder::BuildError, "duplicate key foo")
   end
 
   describe "Build argument separately" do
 
     let(:args) do
-      arg = ComposableArguments.build_argument do |arg|
+      arg = OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.on "-f", "--foo", "Do the foo thing"
       end
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add arg
       end
     end
@@ -570,33 +570,33 @@ describe "integration tests" do
   describe "Build argument separately (build errors)" do
 
     it "is an error to supply an argument and a block" do
-      arg1 = ComposableArguments.build_argument do |arg|
+      arg1 = OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.on "-f", "--foo", "Do the foo thing"
       end
-      args = ComposableArguments.new
+      args = OptparseBuilder.new
       expect do
         args.add(arg1) do |arg|
           arg.banner "A banner"
         end
-      end.to raise_error(ComposableArguments::BuildError,
+      end.to raise_error(OptparseBuilder::BuildError,
                          "Need exactly 1 of arg and block")
     end
 
     it "is an error to supply neither an argument nor a block" do
-      args = ComposableArguments.new
+      args = OptparseBuilder.new
       expect do
         args.add
-      end.to raise_error(ComposableArguments::BuildError,
+      end.to raise_error(OptparseBuilder::BuildError,
                          "Need exactly 1 of arg and block")
     end
     
   end
 
-  describe "accessing values in the ComposableArguments" do
+  describe "accessing values in the OptparseBuilder" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.default "foo"
@@ -617,7 +617,7 @@ describe "integration tests" do
   describe "values collection, from constant" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.default "foo"
@@ -635,7 +635,7 @@ describe "integration tests" do
   describe "values collection, from option" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on("--foo")
@@ -654,7 +654,7 @@ describe "integration tests" do
   describe "values collection, from optional operand" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.optional_operand
@@ -673,7 +673,7 @@ describe "integration tests" do
   describe "values collection, from required operand" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.required_operand
@@ -692,7 +692,7 @@ describe "integration tests" do
   describe "values collection, from splat operand" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.splat_operand
@@ -711,7 +711,7 @@ describe "integration tests" do
   describe "values collection, various methods of accessing" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.default "foo"
@@ -751,7 +751,7 @@ describe "integration tests" do
   describe "parse! returns a value collection" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.default "foo"
@@ -770,7 +770,7 @@ describe "integration tests" do
   describe "bare argument" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
         end
       end
@@ -794,7 +794,7 @@ describe "integration tests" do
   describe "Add argument bundle (syntax 1)" do
 
     let(:args) do
-      bundle = ComposableArguments.build_bundle do |bundler|
+      bundle = OptparseBuilder.build_bundle do |bundler|
         bundler.add do |arg|
           arg.banner "A banner line"
         end
@@ -802,7 +802,7 @@ describe "integration tests" do
           arg.banner "Another banner line"
         end
       end
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add bundle
       end
     end
@@ -823,17 +823,17 @@ describe "integration tests" do
   describe "Add argument bundle (syntax 2)" do
 
     let(:args) do
-      arg1 = ComposableArguments.build_argument do |arg|
+      arg1 = OptparseBuilder.build_argument do |arg|
         arg.banner "A banner line"
       end
-      arg2 = ComposableArguments.build_argument do |arg|
+      arg2 = OptparseBuilder.build_argument do |arg|
         arg.banner "Another banner line"
       end
-      bundle = ComposableArguments.build_bundle do |bundler|
+      bundle = OptparseBuilder.build_bundle do |bundler|
         bundler.add arg1
         bundler.add arg2
       end
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add bundle
       end
     end
@@ -855,36 +855,36 @@ describe "integration tests" do
 
     it "is an error if neither an argument nor a block is supplied" do
       expect do
-        ComposableArguments.build_bundle do |bundler|
+        OptparseBuilder.build_bundle do |bundler|
           bundler.add
         end
-      end.to raise_error(ComposableArguments::BuildError,
+      end.to raise_error(OptparseBuilder::BuildError,
                          "Need exactly 1 of arg and block")
     end
 
     it "is an error if both an argument and a block is supplied" do
-      arg1 = ComposableArguments.build_argument do |arg|
+      arg1 = OptparseBuilder.build_argument do |arg|
         arg.banner "A banner line"
       end
       expect do
-        ComposableArguments.build_bundle do |bundler|
+        OptparseBuilder.build_bundle do |bundler|
           bundler.add(arg1) do |arg|
             arg.banner "Another banner line"
           end
         end
-      end.to raise_error(ComposableArguments::BuildError,
+      end.to raise_error(OptparseBuilder::BuildError,
                          "Need exactly 1 of arg and block")
     end
 
     it "is an error for an arg to be both an option and an optional operand" do
-      args = ComposableArguments.new
+      args = OptparseBuilder.new
       expect do
         args.add do |arg|
           arg.key :foo
           arg.on "-f"
           arg.optional_operand
         end
-      end.to raise_error(ComposableArguments::BuildError,
+      end.to raise_error(OptparseBuilder::BuildError,
                          "Argument cannot be both an option and an operand")
     end
 
@@ -893,7 +893,7 @@ describe "integration tests" do
   describe "Optional operand" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.optional_operand
@@ -929,7 +929,7 @@ describe "integration tests" do
   describe "Optional operand with specific help name" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.optional_operand help_name: "the foo"
@@ -951,7 +951,7 @@ describe "integration tests" do
   describe "Required operand" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.required_operand
@@ -991,7 +991,7 @@ describe "integration tests" do
   describe "Required operand with underscores in the key" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo_bar
           arg.required_operand
@@ -1013,7 +1013,7 @@ describe "integration tests" do
   describe "Required operand with specific help name" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.required_operand help_name: "the foo"
@@ -1035,7 +1035,7 @@ describe "integration tests" do
   describe "Splat operand" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.splat_operand
@@ -1076,7 +1076,7 @@ describe "integration tests" do
   describe "Splat operand with specific help name" do
     
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.splat_operand help_name: "the foo"
@@ -1096,7 +1096,7 @@ describe "integration tests" do
   end
 
   it "consumes argv" do
-    args = ComposableArguments.new do |args|
+    args = OptparseBuilder.new do |args|
       args.add do |arg|
         arg.key :foo
         arg.on "--foo"
@@ -1118,7 +1118,7 @@ describe "integration tests" do
   describe "reset (option without default)" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "--foo"
@@ -1138,7 +1138,7 @@ describe "integration tests" do
   describe "reset (option with default)" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "--foo"
@@ -1159,7 +1159,7 @@ describe "integration tests" do
   describe "reparse (option without default)" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "--foo"
@@ -1179,7 +1179,7 @@ describe "integration tests" do
   describe "reparse (option with default)" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
           arg.on "--foo"
@@ -1200,7 +1200,7 @@ describe "integration tests" do
   describe "knowing if an argument key is present" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :foo
         end
@@ -1223,7 +1223,7 @@ describe "integration tests" do
 
   describe "allowing unparsed operands" do
 
-    let(:args) { ComposableArguments.new }
+    let(:args) { OptparseBuilder.new }
 
     it "prohibits unparsed operands by default" do
       test_harness.args = args
@@ -1256,20 +1256,20 @@ describe "integration tests" do
   describe "sharing arguments" do
 
     let(:arg) do
-      ComposableArguments.build_argument do |arg|
+      OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.optional_operand
       end
     end
 
     let(:args1) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add arg
       end
     end
 
     let(:args2) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add arg
       end
     end
@@ -1286,7 +1286,7 @@ describe "integration tests" do
   describe "sharing bundles" do
 
     let(:bundle) do
-      ComposableArguments.build_bundle do |bundler|
+      OptparseBuilder.build_bundle do |bundler|
         bundler.add do |arg|
           arg.key :foo
           arg.optional_operand
@@ -1299,13 +1299,13 @@ describe "integration tests" do
     end
 
     let(:args1) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add bundle
       end
     end
 
     let(:args2) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add bundle
       end
     end
@@ -1321,41 +1321,41 @@ describe "integration tests" do
 
   it "is a build error if an operand is both required and optional" do
     expect do
-      ComposableArguments.build_argument do |arg|
+      OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.required_operand
         arg.optional_operand
       end
-    end.to raise_error ComposableArguments::BuildError,
+    end.to raise_error OptparseBuilder::BuildError,
                        "Argument is already an operand"
   end
 
   it "is a build error if an operand is both optional and splat" do
     expect do
-      ComposableArguments.build_argument do |arg|
+      OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.optional_operand
         arg.splat_operand
       end
-    end.to raise_error ComposableArguments::BuildError,
+    end.to raise_error OptparseBuilder::BuildError,
                        "Argument is already an operand"
   end
 
   it "is a build error if an operand is both splat and required" do
     expect do
-      ComposableArguments.build_argument do |arg|
+      OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.splat_operand
         arg.required_operand
       end
-    end.to raise_error ComposableArguments::BuildError,
+    end.to raise_error OptparseBuilder::BuildError,
                        "Argument is already an operand"
   end
 
   describe "multiple operands, out of order" do
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add do |arg|
           arg.key :four
           arg.splat_operand
@@ -1388,7 +1388,7 @@ describe "integration tests" do
   describe "multiple operands, out of order from bundles" do
 
     let(:bundle1) do
-      ComposableArguments.build_bundle  do |bundler|
+      OptparseBuilder.build_bundle  do |bundler|
         bundler.add do |arg|
           arg.key :four
           arg.splat_operand
@@ -1401,7 +1401,7 @@ describe "integration tests" do
     end
 
     let(:bundle2) do
-      ComposableArguments.build_bundle  do |bundler|
+      OptparseBuilder.build_bundle  do |bundler|
         bundler.add do |arg|
           arg.key :two
           arg.required_operand
@@ -1414,7 +1414,7 @@ describe "integration tests" do
     end
 
     let(:args) do
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add bundle1
         args.add bundle2
       end
@@ -1432,16 +1432,16 @@ describe "integration tests" do
 
   describe "nested bundles" do
     let(:args) do
-      inner_bundle = ComposableArguments.build_bundle do |bundler|
+      inner_bundle = OptparseBuilder.build_bundle do |bundler|
         bundler.add do |arg|
           arg.key :foo
           arg.default 1
         end
       end
-      outer_bundle = ComposableArguments.build_bundle do |bundler|
+      outer_bundle = OptparseBuilder.build_bundle do |bundler|
         bundler.add(inner_bundle)
       end
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add outer_bundle
       end
     end
@@ -1455,11 +1455,11 @@ describe "integration tests" do
   describe "convert required operand to optional" do
 
     let(:args) do
-      arg = ComposableArguments.build_argument do |arg|
+      arg = OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.required_operand
       end
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add arg.optional
       end
     end
@@ -1478,11 +1478,11 @@ describe "integration tests" do
   describe "convert required operand to required" do
 
     let(:args) do
-      arg = ComposableArguments.build_argument do |arg|
+      arg = OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.required_operand
       end
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add arg.required
       end
     end
@@ -1501,11 +1501,11 @@ describe "integration tests" do
   describe "convert optional operand to optional" do
 
     let(:args) do
-      arg = ComposableArguments.build_argument do |arg|
+      arg = OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.optional_operand
       end
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add arg.optional
       end
     end
@@ -1524,11 +1524,11 @@ describe "integration tests" do
   describe "convert optional operand to required" do
 
     let(:args) do
-      arg = ComposableArguments.build_argument do |arg|
+      arg = OptparseBuilder.build_argument do |arg|
         arg.key :foo
         arg.optional_operand
       end
-      ComposableArguments.new do |args|
+      OptparseBuilder.new do |args|
         args.add arg.required
       end
     end

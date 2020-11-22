@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
 
   Error = Class.new(StandardError)
 

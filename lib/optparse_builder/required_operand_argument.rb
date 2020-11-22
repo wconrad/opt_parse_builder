@@ -1,5 +1,5 @@
-class ComposableArguments
-  class OptionalOperandArgument < Argument
+class OptparseBuilder
+  class RequiredOperandArgument < Argument
 
     include FormatsOperandName
     include HasValue
@@ -10,19 +10,22 @@ class ComposableArguments
     end
 
     def operand_notation
-      "[<#{format_operand_name(@help_name)}>]"
+      "<#{format_operand_name(@help_name)}>"
     end
 
     def shift_operand(argv)
       @value = argv.shift
+      unless @value
+        raise OptionParser::MissingArgument, operand_notation
+      end
     end
 
     def optional
-      self
+      OptionalOperandArgument.new(@key, @default, @help_name)
     end
 
     def required
-      RequiredOperandArgument.new(@key, @default, @help_name)
+      self
     end
     
   end

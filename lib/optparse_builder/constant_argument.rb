@@ -1,4 +1,4 @@
-class ComposableArguments
+class OptparseBuilder
   class ConstantArgument < Argument
 
     attr_reader :key
