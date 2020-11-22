@@ -11,6 +11,9 @@ class ComposableArguments
       []
     end
 
+    def operand_notation
+    end
+
     def separator_lines
       []
     end
@@ -19,6 +22,9 @@ class ComposableArguments
     end
 
     def add_to_values(argument_values)
+    end
+
+    def shift_operand(argv)
     end
        
   end

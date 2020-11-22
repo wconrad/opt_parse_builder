@@ -5,6 +5,7 @@ class ComposableArguments
       @key = nil
       @default = nil
       @on = []
+      @operand = nil
       @banner_lines = []
       @separator_lines = []
     end
@@ -29,6 +30,10 @@ class ComposableArguments
       @separator_lines << line
     end
 
+    def optional_operand
+      @operand = :optional
+    end
+
     def argument
       bundle = ArgumentBundle.new
       unless @banner_lines.empty?
@@ -37,11 +42,19 @@ class ComposableArguments
       unless @separator_lines.empty?
         bundle << SeparatorArgument.new(@separator_lines)
       end
+      # if !@on.empty? && @operand
+      #   raise BuildError, "Cannot both be an option and and operand"
+      # end
       if @on.empty?
-        if @key || @default
-          bundle << ConstantArgument.new(@key, @default)
+        case @operand
+        when :optional
+          bundle << OptionalOperandArgument.new(@key, @default)
         else
-          bundle << NullArgument.new
+          if @key || @default
+            bundle << ConstantArgument.new(@key, @default)
+          else
+            bundle << NullArgument.new
+          end
         end
       else
         bundle << OptionArgument.new(@key, @default, @on)

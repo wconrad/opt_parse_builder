@@ -7,6 +7,7 @@ require_relative "composable_arguments/banner_argument"
 require_relative "composable_arguments/constant_argument"
 require_relative "composable_arguments/errors"
 require_relative "composable_arguments/null_argument"
+require_relative "composable_arguments/optional_operand_argument"
 require_relative "composable_arguments/option_argument"
 require_relative "composable_arguments/separator_argument"
 
@@ -32,6 +33,9 @@ class ComposableArguments
     begin
       op = optparse
       op.parse!(argv)
+      @arguments.each do |arg|
+        arg.shift_operand(argv)
+      end
       unless argv.empty?
         raise OptionParser::NeedlessArgument, argv.first
       end
@@ -79,7 +83,7 @@ class ComposableArguments
 
   def optparse
     op = OptParse.new
-    op.banner = banner_prefix + op.banner
+    op.banner = banner_prefix + op.banner + banner_suffix
     @arguments.each { |arg| arg.apply_option(op) }
     @arguments.each do |argument|
       argument.separator_lines.each do |line|
@@ -97,6 +101,12 @@ class ComposableArguments
     @arguments.map(&:banner_lines).flatten.map do |line|
       line + "\n"
     end.join
+  end
+
+  def banner_suffix
+    suffix = @arguments.map(&:operand_notation).compact.join(" ")
+    suffix = " " + suffix unless suffix.empty?
+    suffix
   end
 
 end

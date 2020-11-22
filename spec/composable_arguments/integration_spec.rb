@@ -1,8 +1,8 @@
 require "composable_arguments"
 
-# Tests that rely on on the public interface.  Changes to the library
-# which require a change to this test are typically breaking changes
-# and cause the major version number to increment.
+# Tests that rely only on the public interface.  Changes to the
+# library which require a change to an existing test are typically
+# breaking changes and cause the major version number to increment.
 
 describe "integration tests" do
 
@@ -627,6 +627,42 @@ describe "integration tests" do
         end
       end.to raise_error(ComposableArguments::BuildError,
                          "Need exactly 1 of arg and block")
+    end
+    
+  end
+
+  describe "Optional operand" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.optional_operand
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] [<foo>]
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is nil before parsing" do
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is nil after parsing when not given" do
+      args.parse!([])
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is set after parsing when given" do
+      args.parse!(["foo"])
+      expect(args[:foo]).to eq "foo"
     end
     
   end
