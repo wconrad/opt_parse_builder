@@ -4,17 +4,18 @@ class ComposableArguments
     attr_reader :key
     attr_reader :value
 
-    def initialize(key, default)
+    def initialize(key, default, help_name)
       unless key
         raise BuildError, "option requires a key"
       end
       @key = key
       @default = default
+      @help_name = help_name || key
       reset
     end
 
     def operand_notation
-      "[<#{@key}>]"
+      "[<#{@help_name}>]"
     end
 
     def shift_operand(argv)

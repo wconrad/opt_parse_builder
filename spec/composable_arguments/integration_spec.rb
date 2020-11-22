@@ -717,6 +717,28 @@ describe "integration tests" do
     
   end
 
+  describe "Optional operand with specific help name" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.optional_operand help_name: "the foo"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] [<the foo>]
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
   it "consumes argv" do
     args = ComposableArguments.new
     args.add do |arg|

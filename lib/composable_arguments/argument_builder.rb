@@ -6,6 +6,7 @@ class ComposableArguments
       @default = nil
       @on = []
       @operand = nil
+      @operand_help_name = nil
       @banner_lines = []
       @separator_lines = []
     end
@@ -30,8 +31,9 @@ class ComposableArguments
       @separator_lines << line
     end
 
-    def optional_operand
+    def optional_operand(help_name: nil)
       @operand = :optional
+      @operand_help_name = help_name
     end
 
     def argument
@@ -49,7 +51,11 @@ class ComposableArguments
       if @on.empty?
         case @operand
         when :optional
-          bundle << OptionalOperandArgument.new(@key, @default)
+          bundle << OptionalOperandArgument.new(
+            @key,
+            @default,
+            @operand_help_name,
+          )
         else
           if @key || @default
             bundle << ConstantArgument.new(@key, @default)
