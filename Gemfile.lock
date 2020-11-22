@@ -1,3 +1,8 @@
+PATH
+  remote: .
+  specs:
+    opt_parse_builder (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -21,8 +26,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (~> 2.1)
+  opt_parse_builder!
   rake (~> 13.0)
   rspec (~> 3.10)
 
 BUNDLED WITH
-   1.17.3
+   2.1.4

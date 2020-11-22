@@ -4,7 +4,5 @@ source "https://rubygems.org"
 
 git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
-group :development do
-  gem "rake", "~> 13.0"
-  gem "rspec", "~> 3.10"
-end
+# Specify your gem's dependencies in opt_parse_builder.gemspec
+gemspec

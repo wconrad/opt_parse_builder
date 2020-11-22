@@ -75,7 +75,7 @@ p arg_values.path
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'composable_arguments'
+gem 'opt_parse_builder'
 ```
 
 And then execute:
@@ -84,7 +84,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install composable_arguments
+    $ gem install opt_parse_builder
 
 # Explanation of some features
 
