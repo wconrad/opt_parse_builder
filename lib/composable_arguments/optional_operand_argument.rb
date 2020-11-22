@@ -1,17 +1,11 @@
 class ComposableArguments
   class OptionalOperandArgument < Argument
 
-    attr_reader :key
-    attr_reader :value
+    include HasValue
 
     def initialize(key, default, help_name)
-      unless key
-        raise BuildError, "option requires a key"
-      end
-      @key = key
-      @default = default
+      init_value(key, default)
       @help_name = help_name || key
-      reset
     end
 
     def operand_notation
@@ -20,10 +14,6 @@ class ComposableArguments
 
     def shift_operand(argv)
       @value = argv.shift
-    end
-      
-    def reset
-      @value = @default
     end
 
     def optional

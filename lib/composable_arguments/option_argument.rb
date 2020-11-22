@@ -1,27 +1,17 @@
 class ComposableArguments
   class OptionArgument < Argument
 
-    attr_reader :key
-    attr_reader :value
+    include HasValue
 
     def initialize(key, default, on)
-      unless key
-        raise BuildError, "option requires a key"
-      end
-      @key = key
-      @default = default
+      init_value(key, default)
       @on = on
-      reset
     end
 
     def apply_option(op)
       op.on(*edited_on) do |v|
         @value = v
       end
-    end
-
-    def reset
-      @value = @default
     end
 
     private

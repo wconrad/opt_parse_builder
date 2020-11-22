@@ -519,7 +519,7 @@ describe "integration tests" do
           arg.on "-f", "--foo", "Do the foo thing"
         end
       end
-    end.to raise_error(ComposableArguments::BuildError, "option requires a key")
+    end.to raise_error(ComposableArguments::BuildError, /requires a key/)
   end
 
   specify "Default must have a key" do
@@ -528,7 +528,7 @@ describe "integration tests" do
       args.add do |arg|
         arg.default 123
       end
-    end.to raise_error(ComposableArguments::BuildError, "default requires a key")
+    end.to raise_error(ComposableArguments::BuildError, /requires a key/)
   end
 
   it "is an error if a key is duplicated" do
