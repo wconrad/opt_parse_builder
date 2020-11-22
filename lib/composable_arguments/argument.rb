@@ -21,9 +21,6 @@ class ComposableArguments
     def apply_option(op)
     end
 
-    def add_to_values(argument_values)
-    end
-
     def shift_operand(argv)
     end
 

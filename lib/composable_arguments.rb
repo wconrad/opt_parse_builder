@@ -90,7 +90,7 @@ class ComposableArguments
   def values
     av = ArgumentValues.new
     @arguments.each do |arg|
-      arg.add_to_values(av)
+      av[arg.key] = arg.value if arg.key
     end
     av
   end

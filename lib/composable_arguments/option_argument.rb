@@ -20,10 +20,6 @@ class ComposableArguments
       end
     end
 
-    def add_to_values(argument_values)
-      argument_values[@key] = value
-    end
-      
     def reset
       @value = @default
     end

@@ -12,9 +12,5 @@ class ComposableArguments
       @value = value
     end
 
-    def add_to_values(argument_values)
-      argument_values[@key] = value
-    end
-    
   end
 end
