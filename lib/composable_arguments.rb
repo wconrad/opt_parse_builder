@@ -74,11 +74,11 @@ class ComposableArguments
     av
   end
 
-  private
-
   def has_key?(key)
     !!find_argument(key)
   end
+
+  private
 
   def find_argument!(key)
     argument = find_argument(key)

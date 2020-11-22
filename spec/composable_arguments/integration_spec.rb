@@ -994,5 +994,29 @@ describe "integration tests" do
     end
 
   end
+
+  describe "knowing if an argument key is present" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+      end
+      args
+    end
+
+    it "reports that a key is present" do
+      expect(args.has_key?(:foo)).to be_truthy
+    end
+
+    it "reports that a key is present (string instead of symbol)" do
+      expect(args.has_key?("foo")).to be_truthy
+    end
+
+    it "reports that a key not present" do
+      expect(args.has_key?(:bar)).to be_falsey
+    end
+    
+  end
   
 end
