@@ -29,6 +29,10 @@ class ComposableArguments
 
     def reset
     end
+
+    def to_a
+      [self]
+    end
        
   end
 end

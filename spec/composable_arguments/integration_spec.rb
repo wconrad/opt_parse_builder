@@ -1146,5 +1146,72 @@ describe "integration tests" do
     end
     
   end
+
+  describe "multiple operands, out of order from bundles" do
+
+    let(:bundle1) do
+      ComposableArguments.build_bundle  do |bundler|
+        bundler.add do |arg|
+          arg.key :four
+          arg.splat_operand
+        end
+        bundler.add do |arg|
+          arg.key :one
+          arg.required_operand
+        end
+      end
+    end
+
+    let(:bundle2) do
+      ComposableArguments.build_bundle  do |bundler|
+        bundler.add do |arg|
+          arg.key :two
+          arg.required_operand
+        end
+        bundler.add do |arg|
+          arg.key :three
+          arg.optional_operand
+        end
+      end
+    end
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add bundle1
+      args.add bundle2
+      args
+    end
+
+    it "accepts two operands" do
+      args.parse!(["1", "2"])
+      expect(args[:one]).to eq "1"
+      expect(args[:two]).to eq "2"
+      expect(args[:three]).to be_nil
+      expect(args[:four]).to be_empty
+    end
+    
+  end
+
+  describe "nested bundles" do
+    let(:args) do
+      inner_bundle = ComposableArguments.build_bundle do |bundler|
+        bundler.add do |arg|
+          arg.key :foo
+          arg.default 1
+        end
+      end
+      outer_bundle = ComposableArguments.build_bundle do |bundler|
+        bundler.add(inner_bundle)
+      end
+      args = ComposableArguments.new
+      args.add outer_bundle
+      args
+    end
+
+    it "should flatten the bundles" do
+      expect(args[:foo]).to eq 1
+    end
+    
+  end
   
 end

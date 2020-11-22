@@ -6,10 +6,13 @@ class ComposableArguments
     end
 
     def <<(argument)
-      if key && argument.key
-        raise Error, "Only one argument in a bundle may have a key"
-      end
       @arguments << argument
+    end
+
+    def to_a
+      @arguments.reduce([]) do |a, arg|
+        a + arg.to_a
+      end
     end
 
     def simplify
@@ -23,43 +26,5 @@ class ComposableArguments
       end
     end
 
-    def key
-      @arguments.each do |arg|
-        return arg.key if arg.key
-      end
-      nil
-    end
-
-    def value
-      @arguments.each do |arg|
-        return arg.value if arg.value
-      end
-      nil
-    end
-
-    def banner_lines
-      @arguments.reduce([]) do |a, arg|
-        a + arg.banner_lines
-      end
-    end
-
-    def separator_lines
-      @arguments.reduce([]) do |a, arg|
-        a + arg.separator_lines
-      end
-    end
-
-    def apply_option(op)
-      @arguments.each do |arg|
-        arg.apply_option(op)
-      end
-    end
-
-    def add_to_values(argument_values)
-      @arguments.each do |arg|
-        arg.add_to_values(argument_values)
-      end
-    end
-       
   end
 end

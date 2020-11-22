@@ -133,7 +133,7 @@ class ComposableArguments
     if argument.key && has_key?(argument.key)
       raise BuildError, "duplicate key #{argument.key}"
     end
-    @arguments << argument
+    @arguments.concat(argument.to_a)
   end
 
   def banner_prefix
