@@ -63,7 +63,7 @@ class ComposableArguments
       raise BuildError, "Need exactly 1 of arg and block"
     end
     if argument
-      add_argument(argument.dup)
+      add_argument(argument)
     else
       add_argument(self.class.build_argument(&block))
     end
@@ -133,7 +133,7 @@ class ComposableArguments
     if argument.key && has_key?(argument.key)
       raise BuildError, "duplicate key #{argument.key}"
     end
-    @arguments.concat(argument.to_a)
+    @arguments.concat(argument.to_a.map(&:dup))
   end
 
   def banner_prefix

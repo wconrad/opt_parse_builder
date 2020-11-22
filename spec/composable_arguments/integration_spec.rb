@@ -1081,6 +1081,42 @@ describe "integration tests" do
     
   end
 
+  describe "sharing bundles" do
+
+    let(:bundle) do
+      ComposableArguments.build_bundle do |bundler|
+        bundler.add do |arg|
+          arg.key :foo
+          arg.optional_operand
+        end
+        # Needed to keep bundle from being simplified
+        bundler.add do |arg|
+          arg.banner "banner"
+        end
+      end
+    end
+
+    let(:args1) do
+      args = ComposableArguments.new
+      args.add bundle
+      args
+    end
+
+    let(:args2) do
+      args = ComposableArguments.new
+      args.add bundle
+      args
+    end
+
+    specify do
+      args1.parse!(["1"])
+      args2.parse!(["2"])
+      expect(args1[:foo]).to eq "1"
+      expect(args2[:foo]).to eq "2"
+    end
+
+  end
+
   it "is a build error if an operand is both required and optional" do
     expect do
       ComposableArguments.build_argument do |arg|
