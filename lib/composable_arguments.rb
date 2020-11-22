@@ -44,12 +44,12 @@ class ComposableArguments
     end
   end
 
-  def add(arg = nil, &block)
-    unless arg.nil? ^ block.nil?
+  def add(argument = nil, &block)
+    unless argument.nil? ^ block.nil?
       raise BuildError, "Need exactly 1 of arg and block"
     end
-    if arg
-      add_argument(arg)
+    if argument
+      add_argument(argument)
     else
       add_argument(self.class.build_argument(&block))
     end
@@ -69,6 +69,10 @@ class ComposableArguments
 
   private
 
+  def has_key?(key)
+    !!find_argument(key)
+  end
+
   def find_argument!(key)
     argument = find_argument(key)
     unless argument
@@ -77,7 +81,7 @@ class ComposableArguments
     argument
   end
 
-  def find_argument!(key)
+  def find_argument(key)
     key = key.to_sym
     @arguments.find do |arg|
       arg.key == key
@@ -97,6 +101,9 @@ class ComposableArguments
   end
 
   def add_argument(argument)
+    if argument.key && has_key?(argument.key)
+      raise BuildError, "duplicate key #{argument.key}"
+    end
     @arguments << argument
   end
 

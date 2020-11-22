@@ -435,6 +435,18 @@ describe "integration tests" do
     end.to raise_error(ComposableArguments::BuildError, "default requires a key")
   end
 
+  it "is an error if a key is duplicated" do
+    args = ComposableArguments.new
+    args.add do |arg|
+      arg.key :foo
+    end
+    expect do
+      args.add do |arg|
+        arg.key :foo
+      end
+    end.to raise_error(ComposableArguments::BuildError, "duplicate key foo")
+  end
+
   describe "Build argument separately" do
 
     let(:args) do
