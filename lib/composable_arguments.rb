@@ -7,8 +7,9 @@ require_relative "composable_arguments/banner_argument"
 require_relative "composable_arguments/constant_argument"
 require_relative "composable_arguments/errors"
 require_relative "composable_arguments/null_argument"
-require_relative "composable_arguments/optional_operand_argument"
 require_relative "composable_arguments/option_argument"
+require_relative "composable_arguments/optional_operand_argument"
+require_relative "composable_arguments/required_operand_argument"
 require_relative "composable_arguments/separator_argument"
 
 class ComposableArguments

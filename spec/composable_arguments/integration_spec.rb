@@ -667,7 +667,7 @@ describe "integration tests" do
                          "Need exactly 1 of arg and block")
     end
 
-    it "is an error for an argument to be both an option and an operand" do
+    it "is an error for an arg to be both an option and an optional operand" do
       expect do
         args = ComposableArguments.new
         args.add do |arg|
@@ -733,6 +733,68 @@ describe "integration tests" do
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] [<the foo>]
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+  
+  describe "Required operand" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.required_operand
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] <foo>
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is nil before parsing" do
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is an error when not given" do
+      test_harness.args = args
+      test_harness.parse!([])
+      expect(test_harness.output).to eq <<~OUTPUT
+        missing argument: <foo>
+        (exit 1)
+      OUTPUT
+    end
+
+    it "is set after parsing when given" do
+      args.parse!(["foo"])
+      expect(args[:foo]).to eq "foo"
+    end
+    
+  end
+
+  describe "Required operand with specific help name" do
+    
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.required_operand help_name: "the foo"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] <the foo>
         (exit 0)
       OUTPUT
     end
