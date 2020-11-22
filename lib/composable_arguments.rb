@@ -54,6 +54,7 @@ class ComposableArguments
       unless @allow_unparsed_operands || argv.empty?
         raise OptionParser::NeedlessArgument, argv.first
       end
+      values
     rescue OptionParser::ParseError => e
       abort e.message
     end

@@ -654,6 +654,25 @@ describe "integration tests" do
 
   end
 
+  describe "parse! returns a value collection" do
+    
+    let(:args) do
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.default "foo"
+        end
+      end
+    end
+    let(:arg_values) {args.values}
+
+    it "can be accessed like a struct" do
+      values = args.parse!([])
+      expect(values.foo).to eq "foo"
+    end
+
+  end
+
   describe "bare argument" do
     
     let(:args) do
