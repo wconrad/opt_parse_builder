@@ -32,16 +32,19 @@ class ComposableArguments
     end
 
     def optional_operand(help_name: nil)
+      check_operand_class_not_set
       @operand_class = OptionalOperandArgument
       @operand_help_name = help_name
     end
 
     def required_operand(help_name: nil)
+      check_operand_class_not_set
       @operand_class = RequiredOperandArgument
       @operand_help_name = help_name
     end
 
     def splat_operand(help_name: nil)
+      check_operand_class_not_set
       @operand_class = SplatOperandArgument
       @operand_help_name = help_name
     end
@@ -72,6 +75,12 @@ class ComposableArguments
     end
 
     private
+
+    def check_operand_class_not_set
+      if @operand_class
+        raise BuildError, "Argument is already an operand"
+      end
+    end
 
     def check_for_build_errors
       if !@on.empty? && @operand_class

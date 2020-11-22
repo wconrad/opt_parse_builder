@@ -1080,5 +1080,38 @@ describe "integration tests" do
     end
     
   end
+
+  it "is a build error if an operand is both required and optional" do
+    expect do
+      ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.required_operand
+        arg.optional_operand
+      end
+    end.to raise_error ComposableArguments::BuildError,
+                       "Argument is already an operand"
+  end
+
+  it "is a build error if an operand is both optional and splat" do
+    expect do
+      ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.optional_operand
+        arg.splat_operand
+      end
+    end.to raise_error ComposableArguments::BuildError,
+                       "Argument is already an operand"
+  end
+
+  it "is a build error if an operand is both splat and required" do
+    expect do
+      ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.splat_operand
+        arg.required_operand
+      end
+    end.to raise_error ComposableArguments::BuildError,
+                       "Argument is already an operand"
+  end
   
 end
