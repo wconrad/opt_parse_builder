@@ -988,6 +988,28 @@ describe "integration tests" do
     
   end
 
+  describe "Required operand with underscores in the key" do
+    
+    let(:args) do
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo_bar
+          arg.required_operand
+        end
+      end
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] <foo bar>
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
   describe "Required operand with specific help name" do
     
     let(:args) do

@@ -1,6 +1,7 @@
 class ComposableArguments
   class RequiredOperandArgument < Argument
 
+    include FormatsOperandName
     include HasValue
 
     def initialize(key, default, help_name)
@@ -9,7 +10,7 @@ class ComposableArguments
     end
 
     def operand_notation
-      "<#{@help_name}>"
+      "<#{format_operand_name(@help_name)}>"
     end
 
     def shift_operand(argv)
