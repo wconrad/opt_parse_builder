@@ -24,11 +24,11 @@ class ComposableArguments
       argument_values[@key] = value
     end
       
-    private
-
     def reset
       @value = @default
     end
+
+    private
 
     def edited_on
       @on.map do |s|

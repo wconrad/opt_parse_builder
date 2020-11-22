@@ -21,8 +21,6 @@ class ComposableArguments
       @value = argv.shift
     end
       
-    private
-
     def reset
       @value = @default
     end

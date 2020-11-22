@@ -731,5 +731,87 @@ describe "integration tests" do
     args.parse!(argv)
     expect(argv).to be_empty
   end
+
+  describe "reset (option without default)" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.on "--foo"
+      end
+      args
+    end
+
+    it "is set after parsing, but nil after reset" do
+      args.parse!(["--foo"])
+      expect(args[:foo]).to be_truthy
+      args.reset
+      expect(args[:foo]).to be_nil
+    end
+
+  end
+
+  describe "reset (option with default)" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.on "--foo"
+        arg.default "foo"
+      end
+      args
+    end
+
+    it "is set after parsing, but default after reset" do
+      args.parse!(["--foo"])
+      expect(args[:foo]).to be_truthy
+      args.reset
+      expect(args[:foo]).to eq "foo"
+    end
+
+  end
+
+  describe "reparse (option without default)" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.on "--foo"
+      end
+      args
+    end
+
+    it "can be reparsed" do
+      args.parse!(["--foo"])
+      expect(args[:foo]).to be_truthy
+      args.parse!([])
+      expect(args[:foo]).to be_nil
+    end
+
+  end
+
+  describe "reparse (option with default)" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.on "--foo"
+        arg.default "foo"
+      end
+      args
+    end
+
+    it "can be reparsed" do
+      args.parse!(["--foo"])
+      expect(args[:foo]).to be_truthy
+      args.parse!([])
+      expect(args[:foo]).to eq "foo"
+    end
+
+  end
   
 end

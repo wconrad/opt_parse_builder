@@ -26,6 +26,9 @@ class ComposableArguments
 
     def shift_operand(argv)
     end
+
+    def reset
+    end
        
   end
 end

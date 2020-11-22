@@ -29,7 +29,12 @@ class ComposableArguments
     @arguments = []
   end
 
+  def reset
+    @arguments.each(&:reset)
+  end
+
   def parse!(argv)
+    reset
     begin
       op = optparse
       op.parse!(argv)
