@@ -27,8 +27,11 @@ class ComposableArguments
     bundler.argument
   end
 
+  attr_accessor :allow_unparsed_operands
+
   def initialize
     @arguments = []
+    @allow_unparsed_operands = false
   end
 
   def reset
@@ -43,7 +46,7 @@ class ComposableArguments
       @arguments.each do |arg|
         arg.shift_operand(argv)
       end
-      unless argv.empty?
+      unless @allow_unparsed_operands || argv.empty?
         raise OptionParser::NeedlessArgument, argv.first
       end
     rescue OptionParser::ParseError => e

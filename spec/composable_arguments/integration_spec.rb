@@ -1018,5 +1018,37 @@ describe "integration tests" do
     end
     
   end
+
+  describe "allowing unparsed operands" do
+
+    let(:args) { ComposableArguments.new }
+
+    it "prohibits unparsed operands by default" do
+      test_harness.args = args
+      test_harness.parse!(["foo"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        needless argument: foo
+        (exit 1)
+      OUTPUT
+    end
+
+    it "explicitly prohibits unparsed operands" do
+      args.allow_unparsed_operands = false
+      test_harness.args = args
+      test_harness.parse!(["foo"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        needless argument: foo
+        (exit 1)
+      OUTPUT
+    end
+
+    it "explicitly allows unparsed operands" do
+      args.allow_unparsed_operands = true
+      argv = ["foo"]
+      args.parse!(argv)
+      expect(argv).to eq ["foo"]
+    end
+    
+  end
   
 end
