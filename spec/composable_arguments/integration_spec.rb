@@ -717,4 +717,19 @@ describe "integration tests" do
     
   end
 
+  it "consumes argv" do
+    args = ComposableArguments.new
+    args.add do |arg|
+      arg.key :foo
+      arg.on "--foo"
+    end
+    args.add do |arg|
+      arg.key :bar
+      arg.optional_operand
+    end
+    argv = ["--foo", "bar"]
+    args.parse!(argv)
+    expect(argv).to be_empty
+  end
+  
 end

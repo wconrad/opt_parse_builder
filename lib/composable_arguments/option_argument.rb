@@ -39,6 +39,6 @@ class ComposableArguments
         end
       end
     end
-    
+
   end
 end
