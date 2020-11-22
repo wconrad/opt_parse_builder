@@ -35,6 +35,7 @@ class ComposableArguments
   def initialize
     @arguments = []
     @allow_unparsed_operands = false
+    yield self if block_given?
   end
 
   def reset

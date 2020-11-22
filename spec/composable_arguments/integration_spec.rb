@@ -36,14 +36,37 @@ describe "integration tests" do
 
   end
 
-  describe "Argument with only a key" do
+  describe "Add argument to existing arguments" do
 
     let(:args) do
       args = ComposableArguments.new
       args.add do |arg|
         arg.key :foo
+        arg.on "--foo"
       end
       args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+                --foo
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "Argument with only a key" do
+
+    let(:args) do
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+        end
+      end
     end
 
     it "prints help" do
@@ -69,11 +92,11 @@ describe "integration tests" do
   describe "Argument with string key" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key "foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key "foo"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -99,12 +122,12 @@ describe "integration tests" do
   describe "Argument with only a key and default" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.default "foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.default "foo"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -130,13 +153,13 @@ describe "integration tests" do
   describe "Argument with a key, a default, and a banner line" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.default "foo"
-        arg.banner "There must be foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.default "foo"
+          arg.banner "There must be foo"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -163,10 +186,10 @@ describe "integration tests" do
   describe "Banner outside of an argument" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.banner "Some banner text"
-      args.banner "Some more banner text"
-      args
+      ComposableArguments.new do |args|
+        args.banner "Some banner text"
+        args.banner "Some more banner text"
+      end
     end
 
     it "prints help" do
@@ -184,12 +207,12 @@ describe "integration tests" do
   describe "Banner only" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.banner "Some banner text"
-        arg.banner "Some more banner text"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.banner "Some banner text"
+          arg.banner "Some more banner text"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -208,10 +231,10 @@ describe "integration tests" do
   describe "Separator outside of an argument" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.separator "Text at the end"
-      args.separator "More text at the end"
-      args
+      ComposableArguments.new do |args|
+        args.separator "Text at the end"
+        args.separator "More text at the end"
+      end
     end
 
     it "prints help" do
@@ -229,12 +252,12 @@ describe "integration tests" do
   describe "Separator only" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.separator "Text at the end"
-        arg.separator "More text at the end"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.separator "Text at the end"
+          arg.separator "More text at the end"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -253,13 +276,13 @@ describe "integration tests" do
   describe "Option with banner" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "-f", "--foo", "Do the foo thing"
-        arg.banner "Banner text for foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "-f", "--foo", "Do the foo thing"
+          arg.banner "Banner text for foo"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -278,13 +301,13 @@ describe "integration tests" do
   describe "Option with separator" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "-f", "--foo", "Do the foo thing"
-        arg.separator "Separator text for foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "-f", "--foo", "Do the foo thing"
+          arg.separator "Separator text for foo"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -303,12 +326,12 @@ describe "integration tests" do
   describe "Simple option (switch), no default" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "-f", "--foo", "Do the foo thing"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "-f", "--foo", "Do the foo thing"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -340,13 +363,13 @@ describe "integration tests" do
   describe "Simple option (switch) with default" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.default false
-        arg.on "-f", "--foo", "Do the foo thing"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.default false
+          arg.on "-f", "--foo", "Do the foo thing"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -378,12 +401,12 @@ describe "integration tests" do
   describe "Option with value, no default" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "--foo=VALUE", "Set foo to VALUE"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "--foo=VALUE", "Set foo to VALUE"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -415,13 +438,13 @@ describe "integration tests" do
   describe "Option with value, with default" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.default "default"
-        arg.on "--foo=VALUE", "Set foo to VALUE (_DEFAULT_)"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.default "default"
+          arg.on "--foo=VALUE", "Set foo to VALUE (_DEFAULT_)"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -453,14 +476,14 @@ describe "integration tests" do
   describe "Option with value, specified over multiple lines" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "--foo=INT"
-        arg.on Integer
-        arg.on "Set foo to INT"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "--foo=INT"
+          arg.on Integer
+          arg.on "Set foo to INT"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -491,16 +514,17 @@ describe "integration tests" do
 
   specify "Option must have a key" do
     expect do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.on "-f", "--foo", "Do the foo thing"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.on "-f", "--foo", "Do the foo thing"
+        end
       end
     end.to raise_error(ComposableArguments::BuildError, "option requires a key")
   end
 
   specify "Default must have a key" do
+    args = ComposableArguments.new
     expect do
-      args = ComposableArguments.new
       args.add do |arg|
         arg.default 123
       end
@@ -526,9 +550,9 @@ describe "integration tests" do
         arg.key :foo
         arg.on "-f", "--foo", "Do the foo thing"
       end
-      args = ComposableArguments.new
-      args.add arg
-      args
+      ComposableArguments.new do |args|
+        args.add arg
+      end
     end
 
     it "prints help" do
@@ -572,12 +596,12 @@ describe "integration tests" do
   describe "accessing values in the ComposableArguments" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.default "foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.default "foo"
+        end
       end
-      args
     end
 
     it "can be accessed like a hash, with a string key" do
@@ -593,12 +617,12 @@ describe "integration tests" do
   describe "accessing values in a value collection" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.default "foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.default "foo"
+        end
       end
-      args
     end
     let(:arg_values) {args.values}
 
@@ -633,10 +657,10 @@ describe "integration tests" do
   describe "bare argument" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
+      ComposableArguments.new do |args|
+        args.add do |arg|
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -665,9 +689,9 @@ describe "integration tests" do
           arg.banner "Another banner line"
         end
       end
-      args = ComposableArguments.new
-      args.add bundle
-      args
+      ComposableArguments.new do |args|
+        args.add bundle
+      end
     end
 
     it "prints help" do
@@ -696,9 +720,9 @@ describe "integration tests" do
         bundler.add arg1
         bundler.add arg2
       end
-      args = ComposableArguments.new
-      args.add bundle
-      args
+      ComposableArguments.new do |args|
+        args.add bundle
+      end
     end
 
     it "prints help" do
@@ -740,8 +764,8 @@ describe "integration tests" do
     end
 
     it "is an error for an arg to be both an option and an optional operand" do
+      args = ComposableArguments.new
       expect do
-        args = ComposableArguments.new
         args.add do |arg|
           arg.key :foo
           arg.on "-f"
@@ -756,12 +780,12 @@ describe "integration tests" do
   describe "Optional operand" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.optional_operand
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.optional_operand
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -792,12 +816,12 @@ describe "integration tests" do
   describe "Optional operand with specific help name" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.optional_operand help_name: "the foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.optional_operand help_name: "the foo"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -814,12 +838,12 @@ describe "integration tests" do
   describe "Required operand" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.required_operand
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.required_operand
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -854,12 +878,12 @@ describe "integration tests" do
   describe "Required operand with specific help name" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.required_operand help_name: "the foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.required_operand help_name: "the foo"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -876,12 +900,12 @@ describe "integration tests" do
   describe "Splat operand" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.splat_operand
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.splat_operand
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -917,12 +941,12 @@ describe "integration tests" do
   describe "Splat operand with specific help name" do
     
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.splat_operand help_name: "the foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.splat_operand help_name: "the foo"
+        end
       end
-      args
     end
 
     it "prints help" do
@@ -937,18 +961,19 @@ describe "integration tests" do
   end
 
   it "consumes argv" do
-    args = ComposableArguments.new
-    args.add do |arg|
-      arg.key :foo
-      arg.on "--foo"
-    end
-    args.add do |arg|
-      arg.key :bar
-      arg.optional_operand
-    end
-    args.add do |arg|
-      arg.key :baz
-      arg.splat_operand
+    args = ComposableArguments.new do |args|
+      args.add do |arg|
+        arg.key :foo
+        arg.on "--foo"
+      end
+      args.add do |arg|
+        arg.key :bar
+        arg.optional_operand
+      end
+      args.add do |arg|
+        arg.key :baz
+        arg.splat_operand
+      end
     end
     argv = ["--foo", "bar", "baz", "quux"]
     args.parse!(argv)
@@ -958,12 +983,12 @@ describe "integration tests" do
   describe "reset (option without default)" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "--foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "--foo"
+        end
       end
-      args
     end
 
     it "is set after parsing, but nil after reset" do
@@ -978,13 +1003,13 @@ describe "integration tests" do
   describe "reset (option with default)" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "--foo"
-        arg.default "foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "--foo"
+          arg.default "foo"
+        end
       end
-      args
     end
 
     it "is set after parsing, but default after reset" do
@@ -999,12 +1024,12 @@ describe "integration tests" do
   describe "reparse (option without default)" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "--foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "--foo"
+        end
       end
-      args
     end
 
     it "can be reparsed" do
@@ -1019,13 +1044,13 @@ describe "integration tests" do
   describe "reparse (option with default)" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
-        arg.on "--foo"
-        arg.default "foo"
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "--foo"
+          arg.default "foo"
+        end
       end
-      args
     end
 
     it "can be reparsed" do
@@ -1040,11 +1065,11 @@ describe "integration tests" do
   describe "knowing if an argument key is present" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :foo
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+        end
       end
-      args
     end
 
     it "reports that a key is present" do
@@ -1103,15 +1128,15 @@ describe "integration tests" do
     end
 
     let(:args1) do
-      args = ComposableArguments.new
-      args.add arg
-      args
+      ComposableArguments.new do |args|
+        args.add arg
+      end
     end
 
     let(:args2) do
-      args = ComposableArguments.new
-      args.add arg
-      args
+      ComposableArguments.new do |args|
+        args.add arg
+      end
     end
 
     specify do
@@ -1139,15 +1164,15 @@ describe "integration tests" do
     end
 
     let(:args1) do
-      args = ComposableArguments.new
-      args.add bundle
-      args
+      ComposableArguments.new do |args|
+        args.add bundle
+      end
     end
 
     let(:args2) do
-      args = ComposableArguments.new
-      args.add bundle
-      args
+      ComposableArguments.new do |args|
+        args.add bundle
+      end
     end
 
     specify do
@@ -1195,24 +1220,24 @@ describe "integration tests" do
   describe "multiple operands, out of order" do
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add do |arg|
-        arg.key :four
-        arg.splat_operand
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :four
+          arg.splat_operand
+        end
+        args.add do |arg|
+          arg.key :one
+          arg.required_operand
+        end
+        args.add do |arg|
+          arg.key :two
+          arg.required_operand
+        end
+        args.add do |arg|
+          arg.key :three
+          arg.optional_operand
+        end
       end
-      args.add do |arg|
-        arg.key :one
-        arg.required_operand
-      end
-      args.add do |arg|
-        arg.key :two
-        arg.required_operand
-      end
-      args.add do |arg|
-        arg.key :three
-        arg.optional_operand
-      end
-      args
     end
 
     it "accepts two operands" do
@@ -1254,10 +1279,10 @@ describe "integration tests" do
     end
 
     let(:args) do
-      args = ComposableArguments.new
-      args.add bundle1
-      args.add bundle2
-      args
+      ComposableArguments.new do |args|
+        args.add bundle1
+        args.add bundle2
+      end
     end
 
     it "accepts two operands" do
@@ -1281,9 +1306,9 @@ describe "integration tests" do
       outer_bundle = ComposableArguments.build_bundle do |bundler|
         bundler.add(inner_bundle)
       end
-      args = ComposableArguments.new
-      args.add outer_bundle
-      args
+      ComposableArguments.new do |args|
+        args.add outer_bundle
+      end
     end
 
     it "should flatten the bundles" do
