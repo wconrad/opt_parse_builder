@@ -25,17 +25,18 @@ class ComposableArguments
     end
 
     def argument
+      bundle = ArgumentBundle.new
+      bundle << BannerArgument.new(@banner_lines) unless @banner_lines.empty?
       if @on.empty?
         if @key
-          Constant.new(@key, @default, @banner_lines)
-        elsif !@banner_lines.empty?
-          BannerArgument.new(@banner_lines)
+          bundle << ConstantArgument.new(@key, @default)
         else
-          NullArgument.new
+          bundle << NullArgument.new
         end
       else
-        Option.new(@key, @default, @on, @banner_lines)
+        bundle << OptionArgument.new(@key, @default, @on)
       end
+      bundle.simplify
     end
 
   end

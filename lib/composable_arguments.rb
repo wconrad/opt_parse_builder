@@ -1,9 +1,12 @@
+require_relative "composable_arguments/argument"
 require_relative "composable_arguments/argument_builder"
+require_relative "composable_arguments/argument_bundle"
 require_relative "composable_arguments/argument_values"
 require_relative "composable_arguments/banner_argument"
-require_relative "composable_arguments/constant"
+require_relative "composable_arguments/constant_argument"
+require_relative "composable_arguments/errors"
 require_relative "composable_arguments/null_argument"
-require_relative "composable_arguments/option"
+require_relative "composable_arguments/option_argument"
 
 class ComposableArguments
 
@@ -15,7 +18,6 @@ class ComposableArguments
 
   def initialize
     @arguments = []
-    @keys = {}
   end
 
   def parse!(argv)
@@ -39,18 +41,33 @@ class ComposableArguments
   end
 
   def [](key)
-    @keys.fetch(key.to_sym).value
+    find_argument!(key).value
   end
 
   def values
-    r = ArgumentValues.new
-    @keys.each do |key, arg|
-      r[key] = arg.value
+    av = ArgumentValues.new
+    @arguments.each do |arg|
+      arg.add_to_values(av)
     end
-    r
+    av
   end
 
   private
+
+  def find_argument!(key)
+    argument = find_argument(key)
+    unless argument
+      raise ArgumentError, "No such argument: #{key}"
+    end
+    argument
+  end
+
+  def find_argument!(key)
+    key = key.to_sym
+    @arguments.find do |arg|
+      arg.key == key
+    end
+  end
 
   def optparse
     op = OptParse.new
@@ -61,9 +78,6 @@ class ComposableArguments
 
   def add_argument(argument)
     @arguments << argument
-    if argument.respond_to?(:key)
-      @keys[argument.key] = argument
-    end
   end
 
   def banner_prefix

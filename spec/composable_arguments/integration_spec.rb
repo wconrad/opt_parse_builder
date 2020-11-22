@@ -93,6 +93,39 @@ describe "integration tests" do
 
   end
 
+  describe "Argument with a key, a default, and a banner line" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.default "foo"
+        arg.banner "There must be foo"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        There must be foo
+        Usage: rspec [options]
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is default before parsing" do
+      expect(args[:foo]).to eq "foo"
+    end
+
+    it "is default after parsing" do
+      args.parse!([])
+      expect(args[:foo]).to eq "foo"
+    end
+
+  end
+
   describe "Banner only" do
 
     let(:args) do
