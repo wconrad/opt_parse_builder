@@ -59,7 +59,7 @@ class ComposableArguments
       raise BuildError, "Need exactly 1 of arg and block"
     end
     if argument
-      add_argument(argument)
+      add_argument(argument.dup)
     else
       add_argument(self.class.build_argument(&block))
     end

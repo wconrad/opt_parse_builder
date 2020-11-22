@@ -1050,5 +1050,35 @@ describe "integration tests" do
     end
     
   end
+
+  describe "sharing arguments" do
+
+    let(:arg) do
+      ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.optional_operand
+      end
+    end
+
+    let(:args1) do
+      args = ComposableArguments.new
+      args.add arg
+      args
+    end
+
+    let(:args2) do
+      args = ComposableArguments.new
+      args.add arg
+      args
+    end
+
+    specify do
+      args1.parse!(["1"])
+      args2.parse!(["2"])
+      expect(args1[:foo]).to eq "1"
+      expect(args2[:foo]).to eq "2"
+    end
+    
+  end
   
 end
