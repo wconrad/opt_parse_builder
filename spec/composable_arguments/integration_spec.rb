@@ -614,7 +614,101 @@ describe "integration tests" do
 
   end
 
-  describe "accessing values in a value collection" do
+  describe "values collection, from constant" do
+    
+    let(:args) do
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.default "foo"
+        end
+      end
+    end
+    let(:arg_values) {args.values}
+
+    it "can be accessed like a struct" do
+      expect(arg_values.foo).to eq "foo"
+    end
+
+  end
+
+  describe "values collection, from option" do
+    
+    let(:args) do
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on("--foo")
+        end
+      end
+    end
+    let(:arg_values) {args.values}
+
+    it "can be accessed like a struct" do
+      args.parse!(["--foo"])
+      expect(arg_values.foo).to be_truthy
+    end
+
+  end
+
+  describe "values collection, from optional operand" do
+    
+    let(:args) do
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.optional_operand
+        end
+      end
+    end
+    let(:arg_values) {args.values}
+
+    it "can be accessed like a struct" do
+      args.parse!(["foo"])
+      expect(arg_values.foo).to eq "foo"
+    end
+
+  end
+
+  describe "values collection, from required operand" do
+    
+    let(:args) do
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.required_operand
+        end
+      end
+    end
+    let(:arg_values) {args.values}
+
+    it "can be accessed like a struct" do
+      args.parse!(["foo"])
+      expect(arg_values.foo).to eq "foo"
+    end
+
+  end
+
+  describe "values collection, from splat operand" do
+    
+    let(:args) do
+      ComposableArguments.new do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.splat_operand
+        end
+      end
+    end
+    let(:arg_values) {args.values}
+
+    it "can be accessed like a struct" do
+      args.parse!(["foo", "bar"])
+      expect(arg_values.foo).to eq ["foo", "bar"]
+    end
+
+  end
+
+  describe "values collection, various methods of accessing" do
     
     let(:args) do
       ComposableArguments.new do |args|
