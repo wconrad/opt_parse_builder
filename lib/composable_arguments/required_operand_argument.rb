@@ -28,6 +28,14 @@ class ComposableArguments
     def reset
       @value = @default
     end
+
+    def optional
+      OptionalOperandArgument.new(@key, @default, @help_name)
+    end
+
+    def required
+      self
+    end
     
   end
 end

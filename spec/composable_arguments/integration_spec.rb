@@ -1429,5 +1429,97 @@ describe "integration tests" do
     end
     
   end
+
+  describe "convert required operand to optional" do
+
+    let(:args) do
+      arg = ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.required_operand
+      end
+      ComposableArguments.new do |args|
+        args.add arg.optional
+      end
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] [<foo>]
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "convert required operand to required" do
+
+    let(:args) do
+      arg = ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.required_operand
+      end
+      ComposableArguments.new do |args|
+        args.add arg.required
+      end
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] <foo>
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "convert optional operand to optional" do
+
+    let(:args) do
+      arg = ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.optional_operand
+      end
+      ComposableArguments.new do |args|
+        args.add arg.optional
+      end
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] [<foo>]
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "convert optional operand to required" do
+
+    let(:args) do
+      arg = ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.optional_operand
+      end
+      ComposableArguments.new do |args|
+        args.add arg.required
+      end
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options] <foo>
+        (exit 0)
+      OUTPUT
+    end
+
+  end
   
 end
