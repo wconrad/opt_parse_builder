@@ -45,6 +45,9 @@ class ComposableArguments
   end
 
   def add(arg = nil, &block)
+    unless arg.nil? ^ block.nil?
+      raise BuildError, "Need exactly 1 of arg and block"
+    end
     if arg
       add_argument(arg)
     else

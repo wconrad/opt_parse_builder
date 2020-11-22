@@ -459,6 +459,32 @@ describe "integration tests" do
     
   end
 
+  describe "Build argument separately (build errors)" do
+
+    it "is an error to supply an argument and a block" do
+      arg1 = ComposableArguments.build_argument do |arg|
+        arg.key :foo
+        arg.on "-f", "--foo", "Do the foo thing"
+      end
+      args = ComposableArguments.new
+      expect do
+        args.add(arg1) do |arg|
+          arg.banner "A banner"
+        end
+      end.to raise_error(ComposableArguments::BuildError,
+                         "Need exactly 1 of arg and block")
+    end
+
+    it "is an error to supply neither an argument nor a block" do
+      args = ComposableArguments.new
+      expect do
+        args.add
+      end.to raise_error(ComposableArguments::BuildError,
+                         "Need exactly 1 of arg and block")
+    end
+    
+  end
+
   describe "accessing values in the ComposableArguments" do
     
     let(:args) do
@@ -544,7 +570,7 @@ describe "integration tests" do
 
   end
 
-  describe "Build and add argument bundle (syntax 1)" do
+  describe "Add argument bundle (syntax 1)" do
 
     let(:args) do
       bundle = ComposableArguments.build_bundle do |bundler|
@@ -573,7 +599,7 @@ describe "integration tests" do
     
   end
 
-  describe "Build and add argument bundle (syntax 2)" do
+  describe "Add argument bundle (syntax 2)" do
 
     let(:args) do
       arg1 = ComposableArguments.build_argument do |arg|
@@ -604,7 +630,7 @@ describe "integration tests" do
     
   end
 
-  describe "Build and add argument bundle (build errors)" do
+  describe "Add argument bundle (build errors)" do
 
     it "is an error if neither an argument nor a block is supplied" do
       expect do
@@ -616,10 +642,10 @@ describe "integration tests" do
     end
 
     it "is an error if both an argument and a block is supplied" do
+      arg1 = ComposableArguments.build_argument do |arg|
+        arg.banner "A banner line"
+      end
       expect do
-        arg1 = ComposableArguments.build_argument do |arg|
-          arg.banner "A banner line"
-        end
         ComposableArguments.build_bundle do |bundler|
           bundler.add(arg1) do |arg|
             arg.banner "Another banner line"
@@ -640,7 +666,7 @@ describe "integration tests" do
       end.to raise_error(ComposableArguments::BuildError,
                          "Argument cannot be both an option and an operand")
     end
-    
+
   end
 
   describe "Optional operand" do
