@@ -154,6 +154,30 @@ describe "integration tests" do
 
   end
 
+  describe "Separator only" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.separator "Text at the end"
+        arg.separator "More text at the end"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+        Text at the end
+        More text at the end
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
   describe "Option with banner" do
 
     let(:args) do
@@ -173,6 +197,31 @@ describe "integration tests" do
         Banner text for foo
         Usage: rspec [options]
             -f, --foo                        Do the foo thing
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "Option with separator" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :foo
+        arg.on "-f", "--foo", "Do the foo thing"
+        arg.separator "Separator text for foo"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+            -f, --foo                        Do the foo thing
+        Separator text for foo
         (exit 0)
       OUTPUT
     end

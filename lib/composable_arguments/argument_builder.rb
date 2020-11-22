@@ -6,6 +6,7 @@ class ComposableArguments
       @default = nil
       @on = []
       @banner_lines = []
+      @separator_lines = []
     end
 
     def key(v)
@@ -24,9 +25,18 @@ class ComposableArguments
       @banner_lines << line
     end
 
+    def separator(line)
+      @separator_lines << line
+    end
+
     def argument
       bundle = ArgumentBundle.new
-      bundle << BannerArgument.new(@banner_lines) unless @banner_lines.empty?
+      unless @banner_lines.empty?
+        bundle << BannerArgument.new(@banner_lines)
+      end
+      unless @separator_lines.empty?
+        bundle << SeparatorArgument.new(@separator_lines)
+      end
       if @on.empty?
         if @key || @default
           bundle << ConstantArgument.new(@key, @default)

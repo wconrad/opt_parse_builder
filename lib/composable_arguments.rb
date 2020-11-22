@@ -8,6 +8,7 @@ require_relative "composable_arguments/constant_argument"
 require_relative "composable_arguments/errors"
 require_relative "composable_arguments/null_argument"
 require_relative "composable_arguments/option_argument"
+require_relative "composable_arguments/separator_argument"
 
 class ComposableArguments
 
@@ -80,6 +81,11 @@ class ComposableArguments
     op = OptParse.new
     op.banner = banner_prefix + op.banner
     @arguments.each { |arg| arg.apply_option(op) }
+    @arguments.each do |argument|
+      argument.separator_lines.each do |line|
+        op.separator(line)
+      end
+    end
     op
   end
 

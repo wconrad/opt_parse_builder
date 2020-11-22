@@ -1,5 +1,5 @@
 class ComposableArguments
-  class ArgumentBundle
+  class ArgumentBundle < Argument
 
     def initialize
       @arguments = []
@@ -40,6 +40,12 @@ class ComposableArguments
     def banner_lines
       @arguments.reduce([]) do |a, arg|
         a + arg.banner_lines
+      end
+    end
+
+    def separator_lines
+      @arguments.reduce([]) do |a, arg|
+        a + arg.separator_lines
       end
     end
 

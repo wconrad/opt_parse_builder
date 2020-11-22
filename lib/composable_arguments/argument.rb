@@ -1,7 +1,17 @@
 class ComposableArguments
   class Argument
 
+    def key
+    end
+
+    def value
+    end
+
     def banner_lines
+      []
+    end
+
+    def separator_lines
       []
     end
 
@@ -9,12 +19,6 @@ class ComposableArguments
     end
 
     def add_to_values(argument_values)
-    end
-
-    def key
-    end
-
-    def value
     end
        
   end
