@@ -1,6 +1,7 @@
 require_relative "composable_arguments/argument"
 require_relative "composable_arguments/argument_builder"
 require_relative "composable_arguments/argument_bundle"
+require_relative "composable_arguments/argument_bundle_builder"
 require_relative "composable_arguments/argument_values"
 require_relative "composable_arguments/banner_argument"
 require_relative "composable_arguments/constant_argument"
@@ -14,6 +15,12 @@ class ComposableArguments
     builder = ArgumentBuilder.new
     yield builder
     builder.argument
+  end
+
+  def self.build_bundle
+    bundler = ArgumentBundleBuilder.new
+    yield bundler
+    bundler.argument
   end
 
   def initialize

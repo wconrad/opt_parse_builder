@@ -491,4 +491,33 @@ describe "integration tests" do
 
   end
 
+  describe "Build and add argument bundle" do
+
+    let(:args) do
+      bundle = ComposableArguments.build_bundle do |bundler|
+        bundler.add do |arg|
+          arg.banner "A banner line"
+        end
+        bundler.add do |arg|
+          arg.banner "Another banner line"
+        end
+      end
+      args = ComposableArguments.new
+      args.add bundle
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        A banner line
+        Another banner line
+        Usage: rspec [options]
+        (exit 0)
+      OUTPUT
+    end
+    
+  end
+
 end
