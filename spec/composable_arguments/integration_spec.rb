@@ -1113,5 +1113,38 @@ describe "integration tests" do
     end.to raise_error ComposableArguments::BuildError,
                        "Argument is already an operand"
   end
+
+  describe "multiple operands, out of order" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key :four
+        arg.splat_operand
+      end
+      args.add do |arg|
+        arg.key :one
+        arg.required_operand
+      end
+      args.add do |arg|
+        arg.key :two
+        arg.required_operand
+      end
+      args.add do |arg|
+        arg.key :three
+        arg.optional_operand
+      end
+      args
+    end
+
+    it "accepts two operands" do
+      args.parse!(["1", "2"])
+      expect(args[:one]).to eq "1"
+      expect(args[:two]).to eq "2"
+      expect(args[:three]).to be_nil
+      expect(args[:four]).to be_empty
+    end
+    
+  end
   
 end

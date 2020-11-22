@@ -12,8 +12,11 @@ require_relative "composable_arguments/optional_operand_argument"
 require_relative "composable_arguments/required_operand_argument"
 require_relative "composable_arguments/separator_argument"
 require_relative "composable_arguments/splat_operand_argument"
+require_relative "composable_arguments/stable_sort"
 
 class ComposableArguments
+
+  include StableSort
 
   def self.build_argument
     builder = ArgumentBuilder.new
@@ -36,6 +39,7 @@ class ComposableArguments
 
   def reset
     @arguments.each(&:reset)
+    sort_arguments
   end
 
   def parse!(argv)
@@ -82,6 +86,21 @@ class ComposableArguments
   end
 
   private
+
+  def sort_arguments
+    stable_sort_by!(@arguments) do |arg|
+      case arg
+      when RequiredOperandArgument
+        1
+      when OptionalOperandArgument
+        2
+      when SplatOperandArgument
+        3
+      else
+        0
+      end
+    end
+  end
 
   def find_argument!(key)
     argument = find_argument(key)
