@@ -160,6 +160,27 @@ describe "integration tests" do
 
   end
 
+  describe "Banner outside of an argument" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.banner "Some banner text"
+      args.banner "Some more banner text"
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Some banner text
+        Some more banner text
+        Usage: rspec [options]
+        (exit 0)
+      OUTPUT
+    end
+  end
+
   describe "Banner only" do
 
     let(:args) do
@@ -182,6 +203,27 @@ describe "integration tests" do
       OUTPUT
     end
 
+  end
+
+  describe "Separator outside of an argument" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.separator "Text at the end"
+      args.separator "More text at the end"
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+        Text at the end
+        More text at the end
+        (exit 0)
+      OUTPUT
+    end
   end
 
   describe "Separator only" do

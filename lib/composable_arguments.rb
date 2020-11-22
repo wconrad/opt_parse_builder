@@ -58,6 +58,18 @@ class ComposableArguments
     end
   end
 
+  def banner(line)
+    self.add do |arg|
+      arg.banner(line)
+    end
+  end
+
+  def separator(line)
+    self.add do |arg|
+      arg.separator(line)
+    end
+  end
+
   def add(argument = nil, &block)
     unless argument.nil? ^ block.nil?
       raise BuildError, "Need exactly 1 of arg and block"
