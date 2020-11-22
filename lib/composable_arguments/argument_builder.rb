@@ -12,7 +12,7 @@ class ComposableArguments
     end
 
     def key(v)
-      @key = v
+      @key = v.to_sym
     end
 
     def default(v)

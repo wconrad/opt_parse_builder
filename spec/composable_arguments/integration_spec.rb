@@ -66,6 +66,36 @@ describe "integration tests" do
 
   end
 
+  describe "Argument with string key" do
+
+    let(:args) do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.key "foo"
+      end
+      args
+    end
+
+    it "prints help" do
+      test_harness.args = args
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+        (exit 0)
+      OUTPUT
+    end
+
+    it "is nil before parsing" do
+      expect(args[:foo]).to be_nil
+    end
+
+    it "is nil after parsing" do
+      args.parse!([])
+      expect(args[:foo]).to be_nil
+    end
+
+  end
+
   describe "Argument with only a key and default" do
 
     let(:args) do
