@@ -28,7 +28,7 @@ class ComposableArguments
       bundle = ArgumentBundle.new
       bundle << BannerArgument.new(@banner_lines) unless @banner_lines.empty?
       if @on.empty?
-        if @key
+        if @key || @default
           bundle << ConstantArgument.new(@key, @default)
         else
           bundle << NullArgument.new

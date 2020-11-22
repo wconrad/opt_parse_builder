@@ -373,6 +373,15 @@ describe "integration tests" do
     end.to raise_error(ComposableArguments::BuildError, "option requires a key")
   end
 
+  specify "Default must have a key" do
+    expect do
+      args = ComposableArguments.new
+      args.add do |arg|
+        arg.default 123
+      end
+    end.to raise_error(ComposableArguments::BuildError, "default requires a key")
+  end
+
   describe "Build argument separately" do
 
     let(:args) do
