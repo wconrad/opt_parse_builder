@@ -628,6 +628,18 @@ describe "integration tests" do
       end.to raise_error(ComposableArguments::BuildError,
                          "Need exactly 1 of arg and block")
     end
+
+    it "is an error for an argument to be both an option and an operand" do
+      expect do
+        args = ComposableArguments.new
+        args.add do |arg|
+          arg.key :foo
+          arg.on "-f"
+          arg.optional_operand
+        end
+      end.to raise_error(ComposableArguments::BuildError,
+                         "Argument cannot be both an option and an operand")
+    end
     
   end
 

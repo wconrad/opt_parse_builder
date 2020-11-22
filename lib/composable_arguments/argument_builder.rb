@@ -42,9 +42,10 @@ class ComposableArguments
       unless @separator_lines.empty?
         bundle << SeparatorArgument.new(@separator_lines)
       end
-      # if !@on.empty? && @operand
-      #   raise BuildError, "Cannot both be an option and and operand"
-      # end
+      if !@on.empty? && @operand
+        raise BuildError,
+              "Argument cannot be both an option and an operand"
+      end
       if @on.empty?
         case @operand
         when :optional
