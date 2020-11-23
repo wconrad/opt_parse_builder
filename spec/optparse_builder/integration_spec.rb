@@ -1543,5 +1543,19 @@ describe "integration tests" do
     end
 
   end
+
+  it "defaults tp parsing ARGV" do
+    args = OptparseBuilder.new do |args|
+      args.add do |arg|
+        arg.key :foo
+        arg.splat_operand
+      end
+    end
+    with_argv(["1", "2"]) do
+      args.parse!
+      expect(args[:foo]).to eq ["1", "2"]
+      expect(ARGV).to be_empty
+    end
+  end
   
 end

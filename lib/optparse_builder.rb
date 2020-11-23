@@ -45,7 +45,7 @@ class OptparseBuilder
     sort_arguments
   end
 
-  def parse!(argv)
+  def parse!(argv = ARGV)
     reset
     begin
       op = optparse
