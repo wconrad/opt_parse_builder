@@ -18,6 +18,10 @@ require_relative "optparse_builder/separator_argument"
 require_relative "optparse_builder/splat_operand_argument"
 require_relative "optparse_builder/stable_sort"
 
+# The "main" class of this library, and the sole entry point.  You
+# never have to (and never should) explicitly refer to any other class
+# than this one.  There are a few other classes you will use, but they
+# will be created for you by methods of this class.
 class OptparseBuilder
 
   include StableSort
@@ -33,6 +37,9 @@ class OptparseBuilder
   #     parser = OptparseBuilder.new do |args|
   #       args.add VERBOSE
   #     end
+  #
+  # See ArgumentBuilder for detials of the different options
+  # avaialable for an argument.
   #
   # This is most useful when you are building a related suite of
   # programs that share some command-line arguments in common.  Most
@@ -94,9 +101,9 @@ class OptparseBuilder
   #     # aborts with "needless argument: /tmp/file1"
   #
   # If `true`, then unparsed operands are not considered an error, and
-  # they remain unconsumed.  Use this setting when you need for
-  # unparsed operands to remain in `ARGV` so that they can be used by,
-  # for example, `ARGF`:
+  # they remain unconsumed.  Use this setting when you want unparsed
+  # operands to remain in `ARGV` so that they can be used by, for
+  # example, `ARGF`:
   #
   #     parser = OptparseBuilder.new do |args|
   #       args.allow_unparsed_operands = true
@@ -152,8 +159,7 @@ class OptparseBuilder
     sort_arguments
   end
 
-  # Parse arguments.  Consumes arguments from the array as they are
-  # parsed.
+  # Parse arguments, consuming them from the array.
   #
   # After parsing, you can get the argument values in either of two
   # ways:
@@ -181,18 +187,88 @@ class OptparseBuilder
     end
   end
 
+  # Add a line to the banner.  The banner is text that appears at the
+  # top of the help text.
+  #
+  # A new-line will automatically be added to the end of the line.
+  # Although it's called a "line," you can embed new-lines in it so
+  # that it is actually more than one line.
+  #
+  # This example:
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.banner "This is my program"
+  #       args.banner <<~BANNER
+  #         There are many programs like it,
+  #         but this program is mine.
+  #       BANNER
+  #     end
+  #
+  # Results in `--help` output like this:
+  #
+  #     This is my program
+  #     There are many programs like it,
+  #     but this program is mine.
+  #     Usage: example [options] <path>
   def banner(line)
     self.add do |arg|
       arg.banner(line)
     end
   end
 
+  # Add a line to the separator.  The separator is text that appears
+  # at the bottom of the help text.
+  #
+  # A new-line will automatically be added to the end of the line.
+  # Although it's called a "line," you can embed new-lines in it so
+  # that it is actually more than one line.
+  #
+  # This example:
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.separator "Here I explain more about my program"
+  #       args.separator <<~SEPARATOR
+  #         For such a small program,
+  #         it has a lot of text at the end.
+  #       SEPARATOR
+  #     end
+  #
+  # Results in `--help` output like this:
+  #
+  #     Usage: example [options] <path>
+  #     Here I explain more about my program
+  #     For such a small program,
+  #     it has a lot of text at the end.
   def separator(line)
     self.add do |arg|
       arg.separator(line)
     end
   end
 
+  # Add an argument.  Must be passed either the argument to add, or
+  # given a block.  If given a block, yields an ArgumentBuilder.
+  #
+  # Example using a pre-built argument:
+  #
+  #     DRY_RUN = OptparseBuilder.build_argument do |arg|
+  #       arg.key :dry_run
+  #       arg.on "-d", "--dry-run", "Make no changes"
+  #     end
+  #     args = OptparseBuilder.new do |args|
+  #       args.add DRY_RUN
+  #     end
+  #
+  # Example using a block to build the argument in-place:
+  #
+  #     args = OptparseBuilder.new do |args|
+  #       args.add do |arg|
+  #         arg.key :dry_run
+  #         arg.on "-d", "--dry-run", "Make no changes"
+  #       end
+  #     end
+  #
+  # See ArgumentBuilder for detials of the different options
+  # avaialable for an argument.
   def add(argument = nil, &block)
     unless argument.nil? ^ block.nil?
       raise BuildError, "Need exactly 1 of arg and block"
@@ -204,6 +280,23 @@ class OptparseBuilder
     end
   end
 
+  # Returns the value of an argument, given either a symbol or a
+  # string with its name.  If the key does not exist, raises KeyError.
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.add do |arg|
+  #         arg.key :x
+  #         arg.default 123
+  #       end
+  #     end
+  #     parser[:x]     # => 123
+  #     parser["x"]    # => 123
+  #     parser[:y]     # KeyError (key not found :y)
+  #
+  # See also:
+  #
+  #   * method #values - returns a collection of all argument values
+  #   * method #has_key?  - find out if the parser knows about a key
   def [](key)
     find_argument!(key).value
   end
@@ -240,7 +333,7 @@ class OptparseBuilder
   def find_argument!(key)
     argument = find_argument(key)
     unless argument
-      raise ArgumentError, "No such argument: #{key}"
+      raise Key, "key not found #{key.inspect}"
     end
     argument
   end
@@ -272,7 +365,7 @@ class OptparseBuilder
   end
 
   def banner_prefix
-    @arguments.map(&:banner_lines).flatten.map do |line|
+    @arguments.flat_map(&:banner_lines).map do |line|
       line + "\n"
     end.join
   end
