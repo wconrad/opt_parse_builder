@@ -24,19 +24,19 @@ Features:
   parsing.  There is no base class for your program to inherit from,
   no module for it to include, and no imposed structure.
 
-* Leaves the choices to you - Stays out of your way so you can do what
-  you want.
+* No magic, no surprises - Plain and explicit.
 
-* No magic, no surprises - Mostly plain and explicit.
-
-* Cohesion - Everything about an argument is in one place.
+* Cohesion - Everything about an argument is defined in one place.
+  You don't have to define the argument's help text in one place, the
+  default value in another, etc.
 
 * Narrow API - Simple and easy to use.
 
 * Fully documented - Includes full code documentation and examples.
 
-* Stable API - Uses [semantic versioning][1].  Promises not to break
-  your program without incrementing the major version number.
+* Stable API - Uses [semantic
+  versioning](ttps://semver.org/spec/v2.0.0.html).  Promises not to
+  break your program without incrementing the major version number.
 
 * Programmed simply - Easy to understand and modify.
 
@@ -47,7 +47,7 @@ Features:
 It is valuable to provide a simple example which can be modified and
 expanded upon:
 
-```
+```ruby
 require "optparse_builder"
 
 arg_parser = OptparseBuilder.new do |args|
@@ -68,7 +68,127 @@ p arg_values.verbose
 p arg_values.path
 ```
 
+# Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'composable_arguments'
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install composable_arguments
+
+# Explanation of some features
+
+## Builder style DSL
+
+You build an argument parser using a builder style DSL, like this:
+
+```ruby
+arg_parser = OptparseBuilder.new do |args|
+  args.add do |arg|
+    arg.key :verbose
+    arg.on "-v", "--verbose", "Be verbose"
+  end
+end
+```
+
+Once built, a parser is normally used like this:
+
+    arg_values = arg_parser.parse!
+
+and argument values retrieved using struct or hash notation:
+
+    p arg_values.verbose
+    p arg_values[:verbose]
+
+## Composability
+
+An argument definition can be created separately from its use:
+
+```ruby
+VERBOSE = OptparseBuilder.build_argument do |arg|
+  arg.key :verbose
+  arg.on "-v", "--verbose", "Print extra output"
+end
+
+parser = OptparseBuilder.new do |args|
+  args.add VERBOSE
+end
+```
+
+This is especially useful where a suite of programs share some
+arguments in common.  Instead of defining common arguments over and
+over, you can define them once and then reuse them in each program:
+
+```ruby
+# common_arguments.rb
+
+require "optparse_builder"
+
+module CommonArguments
+  VERBOSE = OptparseBuilder.build_argument do |arg|
+    arg.key :verbose
+    arg.on "-v", "--verbose", "Print extra output"
+  end
+end
+```
+
+```ruby
+# read_input.rb
+
+require_relative "common_arguments"
+
+ARG_PARSER = OptparseBuilder.new do |args|
+  args.banner "Read and store the input data"
+  args.add do |arg|
+    arg.key 
+    arg.required_operand
+  end
+  args.add CommonArguments::VERBOSE
+end
+```
+
+```ruby
+# write_report.rb
+
+require_relative "common_arguments"
+
+ARG_PARSER = OptparseBuilder.new do |args|
+  args.banner "Print a report based on data previously read"
+  args.add CommonArguments::VERBOSE
+  args.add do |arg|
+    arg.key :detail
+    arg.on "-d", "--detail", "Add the detail section to the report"
+  end
+end
+```
+
+## Development
+
+After checking out the repo, run `bundle` to install dependencies.
+Then run `rake test` to run the tests.
+
+To install this gem onto your local machine, run `bundle exec rake
+install`.  To release a new version, update the version number in
+`version.rb`, and then run `bundle exec rake release`, which will
+create a git tag for the version, push git commits and tags, and push
+the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/wconrad/optparse_builder.
+
 # Terminology
+
+These terms are used in this library's code and documentation:
 
 * Argument - An option or operand
 
@@ -89,90 +209,3 @@ p arg_values.path
 
 * Splat operand - An operand that consumes all remaining operands,
   resulting in an array (possibly empty) of strings.
-
-# Builder style DSL
-
-You build an argument parser using a builder style DSL, like this:
-
-```
-arg_parser = OptparseBuilder.new do |args|
-  args.add do |arg|
-    arg.key :verbose
-    arg.on "-v", "--verbose", "Be verbose"
-  end
-end
-```
-
-Once built, a parser is normally used like this:
-
-    arg_values = arg_parser.parse!
-
-and argument values retrieved using struct or hash notation:
-
-    p arg_values.verbose
-    p arg_values[:verbose]
-
-[1]: https://semver.org/spec/v2.0.0.html
-
-# Composability
-
-An argument definition can be created separately from its use:
-
-```
-VERBOSE = OptparseBuilder.build_argument do |arg|
-  arg.key :verbose
-  arg.on "-v", "--verbose", "Print extra output"
-end
-
-parser = OptparseBuilder.new do |args|
-  args.add VERBOSE
-end
-```
-
-This is especially useful where a suite of programs share some
-arguments in common.  Instead of defining common arguments over and
-over, you can define them once and then reuse them in each program:
-
-```
-# common_arguments.rb
-
-require "optparse_builder"
-
-module CommonArguments
-  VERBOSE = OptparseBuilder.build_argument do |arg|
-    arg.key :verbose
-    arg.on "-v", "--verbose", "Print extra output"
-  end
-end
-```
-
-
-```
-# read_input.rb
-
-require_relative "common_arguments"
-
-ARG_PARSER = OptparseBuilder.new do |args|
-  args.banner "Read and store the input data"
-  args.add do |arg|
-    arg.key 
-    arg.required_operand
-  end
-  args.add CommonArguments::VERBOSE
-end
-```
-
-```
-# write_report.rb
-
-require_relative "common_arguments"
-
-ARG_PARSER = OptparseBuilder.new do |args|
-  args.banner "Print a report based on data previously read"
-  args.add CommonArguments::VERBOSE
-  args.add do |arg|
-    arg.key :detail
-    arg.on "-d", "--detail", "Add the detail section to the report"
-  end
-end
-```
