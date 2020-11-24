@@ -4,12 +4,40 @@ class OptparseBuilder
   # instance of this class yourself.  Instead, an instance is yielded
   # to you by OptparseBuilder.
   #
-  # # Types of arguments, by example
+  # # Argument building examples
+  #
+  # Most of these examples use a shorthand where the surrounding code
+  # is not shown, like this.
+  #
+  #     arg.key = :foo
+  #     arg.on "-f"
+  #
+  # With the surrounding code, that would be this:
+  #
+  #     arg = OptparseBuilder.build_argument do |arg|
+  #       arg.key = :foo
+  #       arg.on = "-f"
+  #     end
+  #
+  # or this:
+  #
+  #     parser = OptparserBuilder.new do |args|
+  #       args.add do |arg|
+  #         arg.key = :foo
+  #         arg.on = "-f"
+  #       end
+  #     end
+  #
+  # ## Null argument
   #
   # A null argument, having no value or visible effect:
   #
   #     OptparseBuilder.build_argument do |arg|
   #     end
+  #
+  # This has little value, but it fell out of the design for free.
+  #
+  # ## Banner only
   #
   # An argument with only banner text (but see OptparseBuilder#banner
   # for the usual way to do this).  "Banner" is how OptParse describes
@@ -23,6 +51,10 @@ class OptparseBuilder
   #         A fourth line
   #       BANNER
   #     end
+  #
+  # Banner text can be added to any argument.
+  #
+  # ## Separator only
   #
   # An argument with only separator text (but see
   # OptparseBuilder#banner for the usual way to do this).  "Separator"
@@ -38,37 +70,43 @@ class OptparseBuilder
   #       SERPARATOR
   #     end
   #
-  # An argument with a constant value.  Perhaps of limited value, but
-  # it fell out of the design for free, so here it is:
+  # Separator text can be added to any argument.
+  #
+  # ## Constant value
+  #
+  # An argument with a constant value.
   #
   #     OptparseBuilder.build_argument do |arg|
   #       arg.key :limit
   #       arg.default 12345
   #     end
   #
-  # A boolean option (switch) handled by OptParse:
+  # This is of limited value, but it fell out of the design for free.
+  #
+  # ## Boolean option (switch)
+  #
+  # A boolean option (switch) parsed by OptParse:
   #
   #     OptparseBuilder.build_argument do |arg|
   #       arg.key :quiet
   #       arg.on "-q", "--quiet", "Suppress normal output"
   #     end
   #
-  #
   # ## Value option
   # 
-  # A value option is parsed by OptParse:
+  # A value option parsed by OptParse:
   #
   #     OptparseBuilder.build_argument do |arg|
   #       arg.key :iterations
   #       arg.default 100
-  #       arg.on "-i", "--iteraions=N",
+  #       arg.on "-i", "--iterations=N",
   #       arg.on "Number of iterations (default _DEFAULT_)"
   #     end
   #
   # ## Required operand
   #
   # A required operand consumes one argument, with an error if there
-  # isn't one to consume.  
+  # isn't one to consume.
   #
   # This example overrides the help name, which is used to describe
   # the operand in the --help text.  Optional and splat arguments can
@@ -80,24 +118,17 @@ class OptparseBuilder
   #       arg.optional_operand
   #     end
   #
-  # The --help output for this argument looks like this:
-  #
-  #     myprogram [options] <resource group>
-  #
   # ## Optional operand
   #
   # An optional operand consumes one argument.  If there isn't an
-  # argument to consume, then the value is either the default (if
-  # specified), or nil (if no default was specified).
+  # argument to consume, then the value is either nil (if no default
+  # was specified), or the specified default value.
   #
   #     OptparseBuilder.build_argument do |arg|
   #       arg.key :group_name
+  #       arg.default "main"
   #       arg.optional_operand
   #     end
-  #
-  # The --help output for this argument looks like this:
-  #
-  #     myprogram [options] [<resource group>]
   #
   # ## Splat Operand
   #
@@ -108,10 +139,6 @@ class OptparseBuilder
   #       arg.key :input_path
   #       arg.optional_operand
   #     end
-  #
-  # The --help output for this argument looks like this:
-  #
-  #     myprogram [options] [<input path>...]
   class ArgumentBuilder
 
     def initialize # :nodoc:
