@@ -1,3 +1,5 @@
+require "optparse"
+
 require_relative "optparse_builder/argument"
 require_relative "optparse_builder/argument_builder"
 require_relative "optparse_builder/argument_bundle"
@@ -20,31 +22,120 @@ class OptparseBuilder
 
   include StableSort
 
+  # Build an argument that can be added to a parser.  Yields an
+  # ArgumentBuilder.
+  #
+  #     VERBOSE = OptparseBuilder.build_argument do |arg|
+  #       arg.key :verbose
+  #       arg.on "-v", "--verbose", "Print extra output"
+  #     end
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.add VERBOSE
+  #     end
+  #
+  # This is most useful when you are building a related suite of
+  # programs that share some command-line arguments in common.
   def self.build_argument
     builder = ArgumentBuilder.new
     yield builder
     builder.argument
   end
 
+  # Build a bundle of arguments that can be added to a parser
+  # together.  Yields an ArgumentBundleBuilder.
+  #
+  # This is useful when you have a group of arguments that go
+  # together:
+  #
+  #     bundle = OptparseBuilder.build_bundle do |args|
+  #       args.add do |arg|
+  #         arg.key :x
+  #         op.on "-x", Integer, "X coordinate"
+  #       end
+  #       args.add do |arg|
+  #         arg.key :y
+  #         op.on "-y", Integer, "Y coordinate"
+  #       end
+  #     end
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.add bundle
+  #     end
+  #
+  # This is most useful when you are building a related suite of
+  # programs that share some command-line arguments in common.
   def self.build_bundle
     bundler = ArgumentBundleBuilder.new
     yield bundler
     bundler.argument
   end
 
+  # If `false` (the default), then unparsed arguments cause an
+  # error.
+  #
+  # If `true`, then unparsed operands are not considered an error, and
+  # they remain unconsumed.  Use this setting when you need for
+  # unparsed operands to remain in ARGV so that they can be used by,
+  # for example, ARGF:
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.allow_unparsed_operands
+  #       args.add do |arg|
+  #         arg.key :quiet
+  #         arg.on "-q", "--quiet", "Suppress normal output"
+  #       end
+  #     end
+  #
+  #     ARGV = ["-q", "/tmp/file1", "/tmp/file2"]
+  #     arg_values = parser.parse!
+  #     # ARGV now equals ["/tmp/file1", "/tmp/file2"]
+  #     ARGF.each_line do |line|
+  #       puts line unless arg_values.quiet
+  #     end
   attr_accessor :allow_unparsed_operands
 
+  # Create a new parser.  If called without a block, returns a parser
+  # than you can then add arguments to:
+  #
+  #     parser = OptparseBuilder.new
+  #     parser.add do |arg|
+  #       arg.key :force
+  #       arg.on "--force", "Force dangerous operation"
+  #     end
+  #
+  # If called with a block, yields itself to the block:
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       arg.key :force
+  #       arg.on "--force", "Force dangerous operation"
+  #     end
   def initialize
     @arguments = []
     @allow_unparsed_operands = false
     yield self if block_given?
   end
 
+  # Reset to the state after construction, before #parse! was called.
+  # Each argument is set to its default value.  An argument with no
+  # explicit default is set to `nil`.
   def reset
     @arguments.each(&:reset)
     sort_arguments
   end
 
+  # Parse arguments.  Consumes arguments from the array as they are
+  # parsed.
+  #
+  # After parsing, you can get the argument values in either of two
+  # ways:
+  #
+  # * Use #[] to fetch the values directly from the parser.
+  # * Use #values to return a collection of argument values.
+  #
+  # If there are operands (positional arguments) in the array that are
+  # not consumed, an error normally results.  This behavior can be
+  # changed using #allow_unparsed_operands.
   def parse!(argv = ARGV)
     reset
     begin

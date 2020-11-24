@@ -1,4 +1,4 @@
 class OptparseBuilder
-  class NullArgument < Argument
+  class NullArgument < Argument # :nodoc:
   end
 end

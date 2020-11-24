@@ -1,5 +1,5 @@
 class OptparseBuilder
-  module FormatsOperandName
+  module FormatsOperandName # :nodoc:
 
     def format_operand_name(s)
       s.to_s.gsub(/_/, " ")

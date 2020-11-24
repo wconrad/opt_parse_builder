@@ -1,7 +1,8 @@
 class OptparseBuilder
 
-  # Pretty like like OpenStruct, but raises an error if you try to
-  # access a value that has not been set.
+  # Like OpenStruct, in that it allows access as through either an
+  # array or a struct, but raises an error if you try to read a value
+  # that has not been set.
   class ArgumentValues
 
     def initialize

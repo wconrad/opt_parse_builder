@@ -1,5 +1,5 @@
 class OptparseBuilder
-  class SplatOperandArgument < Argument
+  class SplatOperandArgument < Argument # :nodoc:
 
     include FormatsOperandName
     include HasValue

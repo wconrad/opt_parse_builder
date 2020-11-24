@@ -1,5 +1,5 @@
 class OptparseBuilder
-  class RequiredOperandArgument < Argument
+  class RequiredOperandArgument < Argument # :nodoc:
 
     include FormatsOperandName
     include HasValue

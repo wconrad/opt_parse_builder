@@ -1,5 +1,5 @@
 class OptparseBuilder
-  class ConstantArgument < Argument
+  class ConstantArgument < Argument # :nodoc:
 
     attr_reader :key
     attr_reader :value

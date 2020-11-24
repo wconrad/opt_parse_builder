@@ -1,5 +1,6 @@
 class OptparseBuilder
-  module StableSort
+
+  module StableSort # :nodoc:
 
     module_function
 

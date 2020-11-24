@@ -1,5 +1,5 @@
 class OptparseBuilder
-  class ArgumentBundle < Argument
+  class ArgumentBundle < Argument # :nodoc:
 
     def initialize
       @arguments = []

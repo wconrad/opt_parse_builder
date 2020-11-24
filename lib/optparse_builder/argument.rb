@@ -1,5 +1,5 @@
 class OptparseBuilder
-  class Argument
+  class Argument # :nodoc:
 
     def key
     end

@@ -1,5 +1,5 @@
 class OptparseBuilder
-  module HasValue
+  module HasValue # :nodoc:
 
     attr_reader :key
     attr_reader :value
