@@ -73,7 +73,7 @@ class OptparseBuilder
   #       args.add VERBOSE
   #     end
   #
-  # See ArgumentBuilder for detials of the different options
+  # See ArgumentBuilder for details of the different options
   # avaialable for an argument.
   #
   # Raises BuildError if the argument cannot be built or added.
@@ -327,8 +327,17 @@ class OptparseBuilder
   #       end
   #     end
   #
-  # See ArgumentBuilder for detials of the different options
-  # avaialable for an argument.
+  # This is equivalent to:
+  #
+  #     args = OptparseBuilder.new do |args|
+  #       args.add OptparseBuilder.build_argument do |arg|
+  #         arg.key :dry_run
+  #         arg.on "-d", "--dry-run", "Make no changes"
+  #       end
+  #     end
+  #
+  # See ArgumentBuilder for details of the different options available
+  # for an argument.
   #
   # Raises BuildError if the argument cannot be built or added.
   def add(argument = nil, &block)

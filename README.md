@@ -71,8 +71,19 @@ p arg_values.path
 # Terminology
 
 * Argument - An option or operand
-  * Option - An argument parsed by optparse, like `-v` or `--size=12`
-  * Operand - An argument not parsed by optparse, like
-    `/path/to/my/file`.  Aka "positional argument."
+
+* Option - An argument parsed by optparse, like `-v` or `--size=12`
+
+* Operand - An argument not parsed by optparse, like
+  `/path/to/my/file`.  Aka "positional argument."
+  
+* Required operand - An operand that must be present or an error
+  results.
+
+* Optional operand - An operand that may be present or not; if not
+  present, it receives either `nil` or a default that you set.
+
+* Splat operand - An operand that consumes all remaining operands,
+  resulting in an array (possibly empty) of strings.
 
 [1]: https://semver.org/spec/v2.0.0.html

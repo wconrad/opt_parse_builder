@@ -21,7 +21,6 @@ class OptparseBuilder
   #
   #     arg_values.one    # => 1
   #     arg_values.two    # => 2
-  
   class ArgumentValues
 
     # Create an empty instance.

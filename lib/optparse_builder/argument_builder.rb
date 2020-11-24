@@ -1,7 +1,11 @@
 class OptparseBuilder
+
+  # Builds arguments using a builder style DSL.  You never create an
+  # instance of this yourself.  Instead, an instance is yielded to you
+  # by OptparseBuilder.
   class ArgumentBuilder
 
-    def initialize
+    def initialize # :nodoc:
       @key = nil
       @default = nil
       @on = []
@@ -11,22 +15,117 @@ class OptparseBuilder
       @separator_lines = []
     end
 
+    # Set the argument's key to either a String or a Symbol.  Used
+    # for:
+    #
+    # * Retrieving the argument's value
+    # * Forming the default "help string" of an operand
     def key(v)
       @key = v.to_sym
     end
 
+    # Set the argument's default value.  This it the value an argument
+    # has before parsing, or if parsing does not set the value.
+    #
+    # If an argument's default value is not explicitly set, then the
+    # default value is `nil`.
     def default(v)
       @default = v
     end
 
+    # Declares the argument to be an option that is handled by
+    # OptParse.  The arguments are passed to OptParse exactly as you
+    # give them, except that the string _DEFAULT_ is replaced with the
+    # argument's default value.
+    #
+    #
+    # Simple example:
+    #
+    #     arg = OptparseBuilder.build_argument do |arg|
+    #       arg.key :quiet
+    #       arg.on "-q", "Be very veru quiet", "We're hunting rabbit!"
+    #     end
+    #
+    # You may split up a long argument list by calling this method
+    # more than once.  This is equivalent to the above:
+    #
+    #     arg = OptparseBuilder.build_argument do |arg|
+    #       arg.key :quiet
+    #       arg.on "-q", "Be very veru quiet",
+    #       arg.on "We're hunting rabbit!"
+    #     end
+    #
+    # So that the option's help may print the default without having
+    # to duplicate it, the string _DEFAULT_ is replaced with the
+    # argument's default value:
+    #
+    #     arg = OptparseBuilder.build_argument do |arg|
+    #       arg.key :size
+    #       arg.default 1024
+    #       arg.on "--size=N", Integer,
+    #       arg.on "Size in bytes (default _DEFAULT_)"
+    #     end
+    #
+    # When the `--help` text for this argument is printed, it will
+    # read:
+    #
+    #     --size-N               Size in bytes (default 1024)
     def on(*option_args)
       @on.concat(option_args)
     end
 
+    # Add to the banner text shown first in the --help output.  You
+    # may call this more than once; each call adds another line of
+    # text to the banner.
+    #
+    # Any type of argument may have banner text:
+    #
+    #     arg = OptparseBuilder.build_argument do |arg|
+    #       arg.banner "PATH is so important that"
+    #       arg.banner "we must tell you about it first!"
+    #       arg.key :path
+    #       arg.required_operand
+    #     end
+    #
+    # You can also have banner text on its own:
+    #
+    #     arg = OptparseBuilder.build_argument do |arg|
+    #       arg.banner "Some banner text"
+    #     end
+    #
+    # This is useful when you have some banner text that is shared
+    # among multiple programs.
+    #
+    # But most of the time you probably want to use
+    # OptparseBuilder#banner
     def banner(line)
       @banner_lines << line
     end
 
+    # Add to the separator text shown last in the --help output.  You
+    # may call this more than once; each call adds another line of
+    # text to the separator.
+    #
+    # Any type of argument may have separator text:
+    #
+    #     arg = OptparseBuilder.build_argument do |arg|
+    #       arg.key :path
+    #       arg.required_operand
+    #       arg.separator "<path> must be the path of a UTF-8 or"
+    #       arg.separator "       UTF-16 file"
+    #     end
+    #
+    # You can also have separator text on its own:
+    #
+    #     arg = OptparseBuilder.build_argument do |arg|
+    #       arg.separator "Some separator text"
+    #     end
+    #
+    # This is useful when you have some separator text that is shared
+    # among multiple programs.
+    #
+    # But most of the time you probably want to use
+    # OptparseBuilder#separator
     def separator(line)
       @separator_lines << line
     end
