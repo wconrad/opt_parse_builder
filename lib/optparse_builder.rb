@@ -22,6 +22,41 @@ require_relative "optparse_builder/stable_sort"
 # never have to (and never should) explicitly refer to any other class
 # than this one.  There are a few other classes you will use, but they
 # will be created for you by methods of this class.
+#
+# Minimal example:
+#
+#     parser = OptparseBuilder.new
+#     parser.parse!
+#
+# An example with a little bit of everything
+#
+#     parser = OptparseBuilder.new do |args|
+#       args.banner "A short description of the program"
+#       args.add do |arg|
+#         arg.key :output_path
+#         arg.required_operand
+#       end
+#       args.add do |arg|
+#         arg.key :input_paths
+#         arg.splat_operand
+#       end
+#       args.add do |arg|
+#         arg.key :quiet
+#         arg.on "-q", "--quiet", "Be quiet"
+#       end
+#       args.add do |arg|
+#         arg.key :size
+#         arg.default 1024
+#         arg.on "--size=N", Integer
+#         arg.on "Size in bytes (default _DEFAULT_)"
+#       end
+#       args.separator "Explanatory text at the bottom"
+#     end
+#     arg_values = parser.parse!
+#     p arg_values.quiet          # nil or true
+#     p arg_values.size           # An Integer
+#     p arg_values.output_path    # A string
+#     p arg_values.input_paths    # An array of strings
 class OptparseBuilder
 
   include StableSort
@@ -41,11 +76,12 @@ class OptparseBuilder
   # See ArgumentBuilder for detials of the different options
   # avaialable for an argument.
   #
+  # Raises BuildError if the argument cannot be built or added.
+  #
   # This is most useful when you are building a related suite of
   # programs that share some command-line arguments in common.  Most
   # of the time you will just add the argument using the block form of
   # OptparseBuilder#add.
-  
   def self.build_argument
     builder = ArgumentBuilder.new
     yield builder
@@ -72,6 +108,8 @@ class OptparseBuilder
   #     parser = OptparseBuilder.new do |args|
   #       args.add bundle
   #     end
+  #
+  # Raises BuildError if the argument cannot be built or added.
   #
   # This is most useful when you are building a related suite of
   # programs that share some command-line arguments in common.  Most
@@ -154,6 +192,9 @@ class OptparseBuilder
   # Reset to the state after construction, before #parse! was called.
   # Each argument is set to its default value.  An argument with no
   # explicit default is set to `nil`.
+  #
+  # This is called implicitly when you call #parse!, so there's seldom
+  # any need for it to be called explicitly.
   def reset
     @arguments.each(&:reset)
     sort_arguments
@@ -161,15 +202,34 @@ class OptparseBuilder
 
   # Parse arguments, consuming them from the array.
   #
-  # After parsing, you can get the argument values in either of two
-  # ways:
+  # After parsing, there are numerous ways to access the value of the arguments:
   #
-  # * Use #[] to fetch the values directly from the parser.
-  # * Use #values to return a collection of argument values.
+  #     parser = OptparseBuilder.new do |args|
+  #       args.add do |arg|
+  #         arg.key :num
+  #         arg.on "--num=N", Integer, "A number"
+  #       end
+  #     end
+  #     arg_values = parser.parse!(["--num=123"])
+  #     p parser[:num]         # => 123
+  #     p parser["num"]        # => 123
+  #     p arg_values[:num]     # => 123
+  #     p arg_values["num"]    # => 123
+  #     p arg_values.num       # => 123
   #
   # If there are operands (positional arguments) in the array that are
   # not consumed, an error normally results.  This behavior can be
   # changed using #allow_unparsed_operands.
+  #
+  # The method defaults to parsing `ARGV`, which is what is usually
+  # wanted, but you can pass in any array of strings, as the above
+  # example does.
+  #
+  # Design note: A method that modifies its argument _and_ modifies
+  # its object _and_ returns a value is not the best design, violating
+  # the good principle of command-query separation.  However, that
+  # violation is more useful in this case than it is sinful, and it's
+  # the only place in this library that violates that principle.
   def parse!(argv = ARGV)
     reset
     begin
@@ -269,6 +329,8 @@ class OptparseBuilder
   #
   # See ArgumentBuilder for detials of the different options
   # avaialable for an argument.
+  #
+  # Raises BuildError if the argument cannot be built or added.
   def add(argument = nil, &block)
     unless argument.nil? ^ block.nil?
       raise BuildError, "Need exactly 1 of arg and block"
@@ -296,11 +358,25 @@ class OptparseBuilder
   # See also:
   #
   #   * method #values - returns a collection of all argument values
-  #   * method #has_key?  - find out if the parser knows about a key
+  #   * method #has_key? - find out if the parser knows about a key
   def [](key)
     find_argument!(key).value
   end
 
+  # Return a collection with all of the argument values.  The
+  # collection can be accessed in several ways:
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.add do |arg|
+  #         arg.key :num
+  #         arg.on "--num=N", Integer, "A number"
+  #       end
+  #     end
+  #     parser.parse!(["--num=123"])
+  #     arg_values = parser.values
+  #     p arg_values[:num]     # => 123
+  #     p arg_values["num"]    # => 123
+  #     p arg_values.num       # => 123
   def values
     av = ArgumentValues.new
     @arguments.each do |arg|
@@ -309,6 +385,17 @@ class OptparseBuilder
     av
   end
 
+  # Return true if the parser has the named key, which may be either a
+  # string or a symbol.
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.add do |arg|
+  #         arg.key :quiet
+  #       end
+  #     end
+  #     parser.has_key?(:quiet)      # => true
+  #     parser.has_key?("quiet")     # => true
+  #     parser.has_key?(:verbose)    # => false
   def has_key?(key)
     !!find_argument(key)
   end
