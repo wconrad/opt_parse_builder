@@ -7,7 +7,7 @@ class OptparseBuilder
   # # Argument building examples
   #
   # Most of these examples use a shorthand where the surrounding code
-  # is not shown, like this.
+  # is not shown:
   #
   #     arg.key = :foo
   #     arg.on "-f"
@@ -35,7 +35,8 @@ class OptparseBuilder
   #     OptparseBuilder.build_argument do |arg|
   #     end
   #
-  # This has little value, but it fell out of the design for free.
+  # This has little value to you, but it fell out of the design for
+  # free, and it is useful in the implementation.
   #
   # ## Banner only
   #
@@ -151,11 +152,7 @@ class OptparseBuilder
       @separator_lines = []
     end
 
-    # Set the argument's key to either a String or a Symbol.  Used
-    # for:
-    #
-    # * Retrieving the argument's value
-    # * Forming the default "help string" of an operand
+    # Set the argument's key.  Accepts either a string or a symbol.
     def key(v)
       @key = v.to_sym
     end
@@ -173,7 +170,6 @@ class OptparseBuilder
     # OptParse.  The arguments are passed to OptParse exactly as you
     # give them, except that the string _DEFAULT_ is replaced with the
     # argument's default value.
-    #
     #
     # Simple example:
     #
@@ -214,26 +210,9 @@ class OptparseBuilder
     # may call this more than once; each call adds another line of
     # text to the banner.
     #
-    # Any type of argument may have banner text:
+    # Any type of argument may have banner text.
     #
-    #     arg = OptparseBuilder.build_argument do |arg|
-    #       arg.banner "PATH is so important that"
-    #       arg.banner "we must tell you about it first!"
-    #       arg.key :path
-    #       arg.required_operand
-    #     end
-    #
-    # You can also have banner text on its own:
-    #
-    #     arg = OptparseBuilder.build_argument do |arg|
-    #       arg.banner "Some banner text"
-    #     end
-    #
-    # This is useful when you have some banner text that is shared
-    # among multiple programs.
-    #
-    # But most of the time you probably want to use
-    # OptparseBuilder#banner
+    # See also OptparseBuilder#banner
     def banner(line)
       @banner_lines << line
     end
@@ -242,42 +221,34 @@ class OptparseBuilder
     # may call this more than once; each call adds another line of
     # text to the separator.
     #
-    # Any type of argument may have separator text:
+    # Any type of argument may have separator text.
     #
-    #     arg = OptparseBuilder.build_argument do |arg|
-    #       arg.key :path
-    #       arg.required_operand
-    #       arg.separator "<path> must be the path of a UTF-8 or"
-    #       arg.separator "       UTF-16 file"
-    #     end
-    #
-    # You can also have separator text on its own:
-    #
-    #     arg = OptparseBuilder.build_argument do |arg|
-    #       arg.separator "Some separator text"
-    #     end
-    #
-    # This is useful when you have some separator text that is shared
-    # among multiple programs.
-    #
-    # But most of the time you probably want to use
-    # OptparseBuilder#separator
+    # See also OptparseBuilder#separator
     def separator(line)
       @separator_lines << line
     end
 
+    # Declare the operand to be an optional operand.  An optional
+    # operand consumes one argument.  If the argument is not present,
+    # value is either the default (if provided), or nil (if no default
+    # was provided).
     def optional_operand(help_name: nil)
       check_operand_class_not_set
       @operand_class = OptionalOperandArgument
       @operand_help_name = help_name
     end
 
+    # Declare the operand to be a required operand.  A required
+    # operand consumes one argument, generating an error if there is
+    # not one.
     def required_operand(help_name: nil)
       check_operand_class_not_set
       @operand_class = RequiredOperandArgument
       @operand_help_name = help_name
     end
 
+    # Declare the argument to be a "splat" operand.  A splat operand
+    # consumes all remaining arguments.
     def splat_operand(help_name: nil)
       check_operand_class_not_set
       @operand_class = SplatOperandArgument
