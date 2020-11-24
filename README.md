@@ -16,7 +16,7 @@ Features:
 
 * Builds on solid ground - Uses tried and true OptParse.
 
-* Familiarity - Arguments to Optparse#on are passed through with very
+* Familiarity - Arguments to OptParse#on are passed through with very
   little change, so you don't have to learn a new syntax for defining
   options.
 

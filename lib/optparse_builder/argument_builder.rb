@@ -1,8 +1,8 @@
 class OptparseBuilder
 
   # Builds arguments using a builder style DSL.  You never create an
-  # instance of this yourself.  Instead, an instance is yielded to you
-  # by OptparseBuilder.
+  # instance of this class yourself.  Instead, an instance is yielded
+  # to you by OptparseBuilder.
   class ArgumentBuilder
 
     def initialize # :nodoc:
@@ -148,7 +148,7 @@ class OptparseBuilder
       @operand_help_name = help_name
     end
 
-    def argument
+    def argument # :nodoc:
       check_for_build_errors
       bundle = ArgumentBundle.new
       unless @banner_lines.empty?
