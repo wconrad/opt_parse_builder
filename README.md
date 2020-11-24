@@ -5,7 +5,7 @@ optparse a compact DSL and operand parsing without being a framework.
 
 Features:
 
-* Has a compact, simple builder style DSL.
+* A  compact, simple builder style DSL.
 
 * Composability - Argument definitions can be defined separately and
   then glued together, allowing them to be shared within a suite of

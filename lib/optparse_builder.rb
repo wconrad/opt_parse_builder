@@ -35,7 +35,10 @@ class OptparseBuilder
   #     end
   #
   # This is most useful when you are building a related suite of
-  # programs that share some command-line arguments in common.
+  # programs that share some command-line arguments in common.  Most
+  # of the time you will just add the argument using the block form of
+  # OptparseBuilder#add.
+  
   def self.build_argument
     builder = ArgumentBuilder.new
     yield builder
@@ -64,23 +67,39 @@ class OptparseBuilder
   #     end
   #
   # This is most useful when you are building a related suite of
-  # programs that share some command-line arguments in common.
+  # programs that share some command-line arguments in common.  Most
+  # of the time you will just add the arguments using the block form
+  # of OptparseBuilder#add.
   def self.build_bundle
     bundler = ArgumentBundleBuilder.new
     yield bundler
     bundler.argument
   end
 
+  # Controls whether unparsed arguments are an error.
+  #
   # If `false` (the default), then unparsed arguments cause an
-  # error.
+  # error:
+  #
+  #     parser = OptparseBuilder.new do |args|
+  #       args.allow_unparsed_operands = false
+  #       args.add do |arg|
+  #         arg.key :quiet
+  #         arg.on "-q", "--quiet", "Suppress normal output"
+  #       end
+  #     end
+  #
+  #     ARGV = ["-q", "/tmp/file1", "/tmp/file2"]
+  #     arg_values = parser.parse!
+  #     # aborts with "needless argument: /tmp/file1"
   #
   # If `true`, then unparsed operands are not considered an error, and
   # they remain unconsumed.  Use this setting when you need for
-  # unparsed operands to remain in ARGV so that they can be used by,
-  # for example, ARGF:
+  # unparsed operands to remain in `ARGV` so that they can be used by,
+  # for example, `ARGF`:
   #
   #     parser = OptparseBuilder.new do |args|
-  #       args.allow_unparsed_operands
+  #       args.allow_unparsed_operands = true
   #       args.add do |arg|
   #         arg.key :quiet
   #         arg.on "-q", "--quiet", "Suppress normal output"
@@ -110,6 +129,15 @@ class OptparseBuilder
   #       arg.key :force
   #       arg.on "--force", "Force dangerous operation"
   #     end
+  #
+  # Note that the parser constructed using the block form can still
+  # be added onto:
+  #
+  #     parser.add do |arg|
+  #       arg.key :size
+  #       arg.on "--size=N", Integer, "File size in bytes"
+  #     end
+  #    
   def initialize
     @arguments = []
     @allow_unparsed_operands = false
