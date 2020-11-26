@@ -1,7 +1,9 @@
 # opt_parse_builder
 
 A Ruby Gem for processing CLI arguments using optparse.  Adds to
-optparse a compact DSL and operand parsing without being a framework.
+optparse a compact builder-style DSL, operand (positional argument)
+parsing, and composability for sharing argument definitions within a
+suite of commands.
 
 Features:
 
