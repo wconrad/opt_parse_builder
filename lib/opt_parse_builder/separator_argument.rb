@@ -1,4 +1,4 @@
-class OptParseBuilder
+module OptParseBuilder
   class SeparatorArgument < Argument # :nodoc:
 
     attr_reader :separator_lines

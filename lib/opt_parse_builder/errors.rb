@@ -1,4 +1,4 @@
-class OptParseBuilder
+module OptParseBuilder
 
   # The base class for all exceptions directly raised by this library.
   class Error < StandardError ; end

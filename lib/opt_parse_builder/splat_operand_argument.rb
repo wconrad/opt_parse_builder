@@ -1,4 +1,4 @@
-class OptParseBuilder
+module OptParseBuilder
   class SplatOperandArgument < Argument # :nodoc:
 
     include FormatsOperandName

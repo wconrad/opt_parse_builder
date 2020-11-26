@@ -1,4 +1,4 @@
-class OptParseBuilder
+module OptParseBuilder
   module FormatsOperandName # :nodoc:
 
     def format_operand_name(s)

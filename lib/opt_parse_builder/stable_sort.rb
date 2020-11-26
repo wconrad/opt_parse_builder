@@ -1,7 +1,6 @@
-class OptParseBuilder
-
+module OptParseBuilder
   module StableSort # :nodoc:
-
+    
     module_function
 
     def stable_sort_by!(a)

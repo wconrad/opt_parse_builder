@@ -1,4 +1,4 @@
-class OptParseBuilder
+module OptParseBuilder
 
   # Yielded by OptParseBuilder.bundle_arguments to create an
   # ArgumentBundle, a collection of arguments that can be treated as

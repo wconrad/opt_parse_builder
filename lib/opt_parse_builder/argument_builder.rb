@@ -1,4 +1,4 @@
-class OptParseBuilder
+module OptParseBuilder
 
   # Builds arguments using a builder style DSL.  You never create an
   # instance of this class yourself.  Instead, an instance is yielded

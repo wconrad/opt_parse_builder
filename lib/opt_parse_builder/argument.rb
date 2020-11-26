@@ -1,4 +1,4 @@
-class OptParseBuilder
+module OptParseBuilder
   class Argument # :nodoc:
 
     def key

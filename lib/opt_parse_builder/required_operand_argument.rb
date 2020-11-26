@@ -1,4 +1,4 @@
-class OptParseBuilder
+module OptParseBuilder
   class RequiredOperandArgument < Argument # :nodoc:
 
     include FormatsOperandName
