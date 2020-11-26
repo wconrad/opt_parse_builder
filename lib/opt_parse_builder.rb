@@ -25,12 +25,12 @@ require_relative "opt_parse_builder/stable_sort"
 #
 # Minimal example:
 #
-#     parser = OptParseBuilder.new
+#     parser = OptParseBuilder.build_parser
 #     parser.parse!
 #
 # An example with a little bit of everything
 #
-#     parser = OptParseBuilder.new do |args|
+#     parser = OptParseBuilder.build_parser do |args|
 #       args.banner "A short description of the program"
 #       args.add do |arg|
 #         arg.key :output_path
@@ -61,6 +61,36 @@ class OptParseBuilder
 
   include StableSort
 
+  # Create a new parser.  If called without a block, returns a parser
+  # than you can then add arguments to:
+  #
+  #     parser = OptParseBuilder.build_parser
+  #     parser.add do |arg|
+  #       arg.key :force
+  #       arg.on "--force", "Force dangerous operation"
+  #     end
+  #
+  # If called with a block, yields itself to the block:
+  #
+  #     parser = OptParseBuilder.build_parser do |args|
+  #       arg.key :force
+  #       arg.on "--force", "Force dangerous operation"
+  #     end
+  #
+  # Note that the parser constructed using the block form can still
+  # be added onto:
+  #
+  #     parser.add do |arg|
+  #       arg.key :size
+  #       arg.on "--size=N", Integer, "File size in bytes"
+  #     end
+  #    
+  def self.build_parser(&block)
+    parser = new
+    yield parser if block_given?
+    parser
+  end
+
   # Build an argument that can be added to a parser.  Yields an
   # ArgumentBuilder.
   #
@@ -69,7 +99,7 @@ class OptParseBuilder
   #       arg.on "-v", "--verbose", "Print extra output"
   #     end
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.add VERBOSE
   #     end
   #
@@ -105,7 +135,7 @@ class OptParseBuilder
   #       end
   #     end
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.add bundle
   #     end
   #
@@ -126,7 +156,7 @@ class OptParseBuilder
   # If `false` (the default), then unparsed arguments cause an
   # error:
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.allow_unparsed_operands = false
   #       args.add do |arg|
   #         arg.key :quiet
@@ -143,7 +173,7 @@ class OptParseBuilder
   # operands to remain in `ARGV` so that they can be used by, for
   # example, `ARGF`:
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.allow_unparsed_operands = true
   #       args.add do |arg|
   #         arg.key :quiet
@@ -159,31 +189,7 @@ class OptParseBuilder
   #     end
   attr_accessor :allow_unparsed_operands
 
-  # Create a new parser.  If called without a block, returns a parser
-  # than you can then add arguments to:
-  #
-  #     parser = OptParseBuilder.new
-  #     parser.add do |arg|
-  #       arg.key :force
-  #       arg.on "--force", "Force dangerous operation"
-  #     end
-  #
-  # If called with a block, yields itself to the block:
-  #
-  #     parser = OptParseBuilder.new do |args|
-  #       arg.key :force
-  #       arg.on "--force", "Force dangerous operation"
-  #     end
-  #
-  # Note that the parser constructed using the block form can still
-  # be added onto:
-  #
-  #     parser.add do |arg|
-  #       arg.key :size
-  #       arg.on "--size=N", Integer, "File size in bytes"
-  #     end
-  #    
-  def initialize
+  def initialize # :nodoc:
     @arguments = []
     @allow_unparsed_operands = false
     yield self if block_given?
@@ -204,7 +210,7 @@ class OptParseBuilder
   #
   # After parsing, there are numerous ways to access the value of the arguments:
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.add do |arg|
   #         arg.key :num
   #         arg.on "--num=N", Integer, "A number"
@@ -221,9 +227,9 @@ class OptParseBuilder
   # not consumed, an error normally results.  This behavior can be
   # changed using #allow_unparsed_operands.
   #
-  # The method defaults to parsing `ARGV`, which is what is usually
-  # wanted, but you can pass in any array of strings, as the above
-  # example does.
+  # The #parse! method defaults to parsing `ARGV`, which is what is
+  # usually wanted, but you can pass in any array of strings, as the
+  # above example does.
   #
   # Design note: A method that modifies its argument _and_ modifies
   # its object _and_ returns a value is not the best design, violating
@@ -256,7 +262,7 @@ class OptParseBuilder
   #
   # This example:
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.banner "This is my program"
   #       args.banner <<~BANNER
   #         There are many programs like it,
@@ -285,7 +291,7 @@ class OptParseBuilder
   #
   # This example:
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.separator "Here I explain more about my program"
   #       args.separator <<~SEPARATOR
   #         For such a small program,
@@ -314,13 +320,13 @@ class OptParseBuilder
   #       arg.key :dry_run
   #       arg.on "-d", "--dry-run", "Make no changes"
   #     end
-  #     args = OptParseBuilder.new do |args|
+  #     args = OptParseBuilder.build_parser do |args|
   #       args.add DRY_RUN
   #     end
   #
   # Example using a block to build the argument in-place:
   #
-  #     args = OptParseBuilder.new do |args|
+  #     args = OptParseBuilder.build_parser do |args|
   #       args.add do |arg|
   #         arg.key :dry_run
   #         arg.on "-d", "--dry-run", "Make no changes"
@@ -329,7 +335,7 @@ class OptParseBuilder
   #
   # This is equivalent to:
   #
-  #     args = OptParseBuilder.new do |args|
+  #     args = OptParseBuilder.build_parser do |args|
   #       args.add OptParseBuilder.build_argument do |arg|
   #         arg.key :dry_run
   #         arg.on "-d", "--dry-run", "Make no changes"
@@ -354,7 +360,7 @@ class OptParseBuilder
   # Returns the value of an argument, given either a symbol or a
   # string with its name.  If the key does not exist, raises KeyError.
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.add do |arg|
   #         arg.key :x
   #         arg.default 123
@@ -375,7 +381,7 @@ class OptParseBuilder
   # Return a collection with all of the argument values.  The
   # collection can be accessed in several ways:
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.add do |arg|
   #         arg.key :num
   #         arg.on "--num=N", Integer, "A number"
@@ -397,7 +403,7 @@ class OptParseBuilder
   # Return true if the parser has the named key, which may be either a
   # string or a symbol.
   #
-  #     parser = OptParseBuilder.new do |args|
+  #     parser = OptParseBuilder.build_parser do |args|
   #       args.add do |arg|
   #         arg.key :quiet
   #       end

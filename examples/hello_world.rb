@@ -2,7 +2,7 @@
 
 require "opt_parse_builder"
 
-ARG_PARSER = OptParseBuilder.new do |args|
+ARG_PARSER = OptParseBuilder.build_parser do |args|
   args.banner "A simple example"
   args.add do |arg|
     arg.key :path

@@ -52,7 +52,7 @@ expanded upon:
 ```ruby
 require "opt_parse_builder"
 
-arg_parser = OptParseBuilder.new do |args|
+arg_parser = OptParseBuilder.build_parser do |args|
   args.banner "A simple example"
   args.add do |arg|
     arg.key :path
@@ -93,7 +93,7 @@ Or install it yourself as:
 You build an argument parser using a builder style DSL, like this:
 
 ```ruby
-arg_parser = OptParseBuilder.new do |args|
+arg_parser = OptParseBuilder.build_parser do |args|
   args.add do |arg|
     arg.key :verbose
     arg.on "-v", "--verbose", "Be verbose"
@@ -120,7 +120,7 @@ VERBOSE = OptParseBuilder.build_argument do |arg|
   arg.on "-v", "--verbose", "Print extra output"
 end
 
-parser = OptParseBuilder.new do |args|
+parser = OptParseBuilder.build_parser do |args|
   args.add VERBOSE
 end
 ```
@@ -147,7 +147,7 @@ end
 
 require_relative "common_arguments"
 
-ARG_PARSER = OptParseBuilder.new do |args|
+ARG_PARSER = OptParseBuilder.build_parser do |args|
   args.banner "Read and store the input data"
   args.add do |arg|
     arg.key 
@@ -162,7 +162,7 @@ end
 
 require_relative "common_arguments"
 
-ARG_PARSER = OptParseBuilder.new do |args|
+ARG_PARSER = OptParseBuilder.build_parser do |args|
   args.banner "Print a report based on data previously read"
   args.add CommonArguments::VERBOSE
   args.add do |arg|
