@@ -10,10 +10,10 @@ describe "integration tests" do
   
   describe "Minimal" do
 
-    let(:args) { OptParseBuilder.build_parser }
+    let(:parser) { OptParseBuilder.build_parser }
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -22,11 +22,11 @@ describe "integration tests" do
     end
 
     it "parses nothing" do
-      args.parse!([])
+      parser.parse!([])
     end
 
     it "complains if it sees an operand" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["foo"])
       expect(test_harness.output).to eq <<~OUTPUT
         needless argument: foo
@@ -38,17 +38,17 @@ describe "integration tests" do
 
   describe "Add argument to existing arguments" do
 
-    let(:args) do
-      args = OptParseBuilder.build_parser
-      args.add do |arg|
+    let(:parser) do
+      parser = OptParseBuilder.build_parser
+      parser.add do |arg|
         arg.key :foo
         arg.on "--foo"
       end
-      args
+      parser
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -61,16 +61,16 @@ describe "integration tests" do
 
   describe "Argument with only a key" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
         end
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -79,28 +79,28 @@ describe "integration tests" do
     end
 
     it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
+      expect(parser[:foo]).to be_nil
     end
 
     it "is nil after parsing" do
-      args.parse!([])
-      expect(args[:foo]).to be_nil
+      parser.parse!([])
+      expect(parser[:foo]).to be_nil
     end
 
   end
 
   describe "Argument with string key" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key "foo"
         end
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -109,21 +109,21 @@ describe "integration tests" do
     end
 
     it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
+      expect(parser[:foo]).to be_nil
     end
 
     it "is nil after parsing" do
-      args.parse!([])
-      expect(args[:foo]).to be_nil
+      parser.parse!([])
+      expect(parser[:foo]).to be_nil
     end
 
   end
 
   describe "Argument with only a key and default" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
@@ -131,7 +131,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -140,21 +140,21 @@ describe "integration tests" do
     end
 
     it "is default before parsing" do
-      expect(args[:foo]).to eq "foo"
+      expect(parser[:foo]).to eq "foo"
     end
 
     it "is default after parsing" do
-      args.parse!([])
-      expect(args[:foo]).to eq "foo"
+      parser.parse!([])
+      expect(parser[:foo]).to eq "foo"
     end
 
   end
 
   describe "Argument with a key, a default, and a banner line" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.default "foo"
           arg.banner "There must be foo"
@@ -163,7 +163,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         There must be foo
@@ -173,27 +173,27 @@ describe "integration tests" do
     end
 
     it "is default before parsing" do
-      expect(args[:foo]).to eq "foo"
+      expect(parser[:foo]).to eq "foo"
     end
 
     it "is default after parsing" do
-      args.parse!([])
-      expect(args[:foo]).to eq "foo"
+      parser.parse!([])
+      expect(parser[:foo]).to eq "foo"
     end
 
   end
 
   describe "Banner outside of an argument" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.banner "Some banner text"
-        args.banner "Some more banner text"
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.banner "Some banner text"
+        parser.banner "Some more banner text"
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Some banner text
@@ -206,9 +206,9 @@ describe "integration tests" do
 
   describe "Banner only" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.banner "Some banner text"
           arg.banner "Some more banner text"
         end
@@ -216,7 +216,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Some banner text
@@ -230,15 +230,15 @@ describe "integration tests" do
 
   describe "Separator outside of an argument" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.separator "Text at the end"
-        args.separator "More text at the end"
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.separator "Text at the end"
+        parser.separator "More text at the end"
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -251,9 +251,9 @@ describe "integration tests" do
 
   describe "Separator only" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.separator "Text at the end"
           arg.separator "More text at the end"
         end
@@ -261,7 +261,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -275,9 +275,9 @@ describe "integration tests" do
 
   describe "Option with banner" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
           arg.banner "Banner text for foo"
@@ -286,7 +286,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Banner text for foo
@@ -300,9 +300,9 @@ describe "integration tests" do
 
   describe "Option with separator" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
           arg.separator "Separator text for foo"
@@ -311,7 +311,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -325,9 +325,9 @@ describe "integration tests" do
 
   describe "Simple option (switch), no default" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
         end
@@ -335,7 +335,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -345,26 +345,26 @@ describe "integration tests" do
     end
 
     it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
+      expect(parser[:foo]).to be_nil
     end
 
     it "is nil after parsing when not selected" do
-      args.parse!([])
-      expect(args[:foo]).to be_nil
+      parser.parse!([])
+      expect(parser[:foo]).to be_nil
     end
 
     it "is true after parsing when selected" do
-      args.parse!(["-f"])
-      expect(args[:foo]).to eq true
+      parser.parse!(["-f"])
+      expect(parser[:foo]).to eq true
     end
 
   end
 
   describe "Simple option (switch) with default" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.default false
           arg.on "-f", "--foo", "Do the foo thing"
@@ -373,7 +373,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -383,26 +383,26 @@ describe "integration tests" do
     end
 
     it "has default value before parsing" do
-      expect(args[:foo]).to eq false
+      expect(parser[:foo]).to eq false
     end
 
     it "has default value after parsing when not selected" do
-      args.parse!([])
-      expect(args[:foo]).to eq false
+      parser.parse!([])
+      expect(parser[:foo]).to eq false
     end
 
     it "is true after parsing when selected" do
-      args.parse!(["-f"])
-      expect(args[:foo]).to eq true
+      parser.parse!(["-f"])
+      expect(parser[:foo]).to eq true
     end
     
   end
 
   describe "Option with value, no default" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "--foo=VALUE", "Set foo to VALUE"
         end
@@ -410,7 +410,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -420,26 +420,26 @@ describe "integration tests" do
     end
 
     it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
+      expect(parser[:foo]).to be_nil
     end
 
     it "is nil after parsing when not set" do
-      args.parse!([])
-      expect(args[:foo]).to be_nil
+      parser.parse!([])
+      expect(parser[:foo]).to be_nil
     end
 
     it "is the appropriate value when set" do
-      args.parse!(["--foo=BAR"])
-      expect(args[:foo]).to eq "BAR"
+      parser.parse!(["--foo=BAR"])
+      expect(parser[:foo]).to eq "BAR"
     end
     
   end
 
   describe "Option with value, with default" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.default "default"
           arg.on "--foo=VALUE", "Set foo to VALUE (_DEFAULT_)"
@@ -448,7 +448,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -458,26 +458,26 @@ describe "integration tests" do
     end
 
     it "is default before parsing" do
-      expect(args[:foo]).to eq "default"
+      expect(parser[:foo]).to eq "default"
     end
 
     it "is default after parsing when not set" do
-      args.parse!([])
-      expect(args[:foo]).to eq "default"
+      parser.parse!([])
+      expect(parser[:foo]).to eq "default"
     end
 
     it "is the appropriate value when set" do
-      args.parse!(["--foo=BAR"])
-      expect(args[:foo]).to eq "BAR"
+      parser.parse!(["--foo=BAR"])
+      expect(parser[:foo]).to eq "BAR"
     end
     
   end
 
   describe "Option with value, specified over multiple lines" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "--foo=INT"
           arg.on Integer
@@ -487,7 +487,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -497,25 +497,25 @@ describe "integration tests" do
     end
 
     it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
+      expect(parser[:foo]).to be_nil
     end
 
     it "is nil after parsing when not set" do
-      args.parse!([])
-      expect(args[:foo]).to be_nil
+      parser.parse!([])
+      expect(parser[:foo]).to be_nil
     end
 
     it "is the appropriate value when set" do
-      args.parse!(["--foo=123"])
-      expect(args[:foo]).to eq 123
+      parser.parse!(["--foo=123"])
+      expect(parser[:foo]).to eq 123
     end
     
   end
 
   specify "Option must have a key" do
     expect do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.on "-f", "--foo", "Do the foo thing"
         end
       end
@@ -523,21 +523,21 @@ describe "integration tests" do
   end
 
   specify "Default must have a key" do
-    args = OptParseBuilder.build_parser
+    parser = OptParseBuilder.build_parser
     expect do
-      args.add do |arg|
+      parser.add do |arg|
         arg.default 123
       end
     end.to raise_error(OptParseBuilder::BuildError, /requires a key/)
   end
 
   it "is an error if a key is duplicated" do
-    args = OptParseBuilder.build_parser
-    args.add do |arg|
+    parser = OptParseBuilder.build_parser
+    parser.add do |arg|
       arg.key :foo
     end
     expect do
-      args.add do |arg|
+      parser.add do |arg|
         arg.key :foo
       end
     end.to raise_error(OptParseBuilder::BuildError, "duplicate key foo")
@@ -545,18 +545,18 @@ describe "integration tests" do
 
   describe "Build argument separately" do
 
-    let(:args) do
+    let(:parser) do
       arg = OptParseBuilder.build_argument do |arg|
         arg.key :foo
         arg.on "-f", "--foo", "Do the foo thing"
       end
-      OptParseBuilder.build_parser do |args|
-        args.add arg
+      OptParseBuilder.build_parser do |parser|
+        parser.add arg
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -574,9 +574,9 @@ describe "integration tests" do
         arg.key :foo
         arg.on "-f", "--foo", "Do the foo thing"
       end
-      args = OptParseBuilder.build_parser
+      parser = OptParseBuilder.build_parser
       expect do
-        args.add(arg1) do |arg|
+        parser.add(arg1) do |arg|
           arg.banner "A banner"
         end
       end.to raise_error(OptParseBuilder::BuildError,
@@ -584,9 +584,9 @@ describe "integration tests" do
     end
 
     it "is an error to supply neither an argument nor a block" do
-      args = OptParseBuilder.build_parser
+      parser = OptParseBuilder.build_parser
       expect do
-        args.add
+        parser.add
       end.to raise_error(OptParseBuilder::BuildError,
                          "Need exactly 1 of arg and block")
     end
@@ -595,9 +595,9 @@ describe "integration tests" do
 
   describe "accessing values in the OptParseBuilder" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
@@ -605,26 +605,26 @@ describe "integration tests" do
     end
 
     it "can be accessed like a hash, with a string key" do
-      expect(args["foo"]).to eq "foo"
+      expect(parser["foo"]).to eq "foo"
     end
 
     it "can be accessed like a hash, with a symbol key" do
-      expect(args[:foo]).to eq "foo"
+      expect(parser[:foo]).to eq "foo"
     end
 
   end
 
   describe "values collection, from constant" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
       end
     end
-    let(:arg_values) {args.values}
+    let(:arg_values) {parser.values}
 
     it "can be accessed like a struct" do
       expect(arg_values.foo).to eq "foo"
@@ -634,18 +634,18 @@ describe "integration tests" do
 
   describe "values collection, from option" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on("--foo")
         end
       end
     end
-    let(:arg_values) {args.values}
+    let(:arg_values) {parser.values}
 
     it "can be accessed like a struct" do
-      args.parse!(["--foo"])
+      parser.parse!(["--foo"])
       expect(arg_values.foo).to be_truthy
     end
 
@@ -653,18 +653,18 @@ describe "integration tests" do
 
   describe "values collection, from optional operand" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.optional_operand
         end
       end
     end
-    let(:arg_values) {args.values}
+    let(:arg_values) {parser.values}
 
     it "can be accessed like a struct" do
-      args.parse!(["foo"])
+      parser.parse!(["foo"])
       expect(arg_values.foo).to eq "foo"
     end
 
@@ -672,18 +672,18 @@ describe "integration tests" do
 
   describe "values collection, from required operand" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.required_operand
         end
       end
     end
-    let(:arg_values) {args.values}
+    let(:arg_values) {parser.values}
 
     it "can be accessed like a struct" do
-      args.parse!(["foo"])
+      parser.parse!(["foo"])
       expect(arg_values.foo).to eq "foo"
     end
 
@@ -691,18 +691,18 @@ describe "integration tests" do
 
   describe "values collection, from splat operand" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.splat_operand
         end
       end
     end
-    let(:arg_values) {args.values}
+    let(:arg_values) {parser.values}
 
     it "can be accessed like a struct" do
-      args.parse!(["foo", "bar"])
+      parser.parse!(["foo", "bar"])
       expect(arg_values.foo).to eq ["foo", "bar"]
     end
 
@@ -710,15 +710,15 @@ describe "integration tests" do
 
   describe "values collection, various methods of accessing" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
       end
     end
-    let(:arg_values) {args.values}
+    let(:arg_values) {parser.values}
 
     it "can be accessed like a struct" do
       expect(arg_values.foo).to eq "foo"
@@ -750,18 +750,18 @@ describe "integration tests" do
 
   describe "parse! returns a value collection" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
       end
     end
-    let(:arg_values) {args.values}
+    let(:arg_values) {parser.values}
 
     it "can be accessed like a struct" do
-      values = args.parse!([])
+      values = parser.parse!([])
       expect(values.foo).to eq "foo"
     end
 
@@ -769,15 +769,15 @@ describe "integration tests" do
 
   describe "bare argument" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
         end
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options]
@@ -786,14 +786,14 @@ describe "integration tests" do
     end
 
     it "has no values" do
-      expect(args.values).to be_empty
+      expect(parser.values).to be_empty
     end
 
   end
 
   describe "Add argument bundle (syntax 1)" do
 
-    let(:args) do
+    let(:parser) do
       bundle = OptParseBuilder.build_bundle do |bundler|
         bundler.add do |arg|
           arg.banner "A banner line"
@@ -802,13 +802,13 @@ describe "integration tests" do
           arg.banner "Another banner line"
         end
       end
-      OptParseBuilder.build_parser do |args|
-        args.add bundle
+      OptParseBuilder.build_parser do |parser|
+        parser.add bundle
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         A banner line
@@ -822,7 +822,7 @@ describe "integration tests" do
 
   describe "Add argument bundle (syntax 2)" do
 
-    let(:args) do
+    let(:parser) do
       arg1 = OptParseBuilder.build_argument do |arg|
         arg.banner "A banner line"
       end
@@ -833,13 +833,13 @@ describe "integration tests" do
         bundler.add arg1
         bundler.add arg2
       end
-      OptParseBuilder.build_parser do |args|
-        args.add bundle
+      OptParseBuilder.build_parser do |parser|
+        parser.add bundle
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         A banner line
@@ -877,9 +877,9 @@ describe "integration tests" do
     end
 
     it "is an error for an arg to be both an option and an optional operand" do
-      args = OptParseBuilder.build_parser
+      parser = OptParseBuilder.build_parser
       expect do
-        args.add do |arg|
+        parser.add do |arg|
           arg.key :foo
           arg.on "-f"
           arg.optional_operand
@@ -892,9 +892,9 @@ describe "integration tests" do
 
   describe "Optional operand" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.optional_operand
         end
@@ -902,7 +902,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] [<foo>]
@@ -911,26 +911,26 @@ describe "integration tests" do
     end
 
     it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
+      expect(parser[:foo]).to be_nil
     end
 
     it "is nil after parsing when not given" do
-      args.parse!([])
-      expect(args[:foo]).to be_nil
+      parser.parse!([])
+      expect(parser[:foo]).to be_nil
     end
 
     it "is set after parsing when given" do
-      args.parse!(["foo"])
-      expect(args[:foo]).to eq "foo"
+      parser.parse!(["foo"])
+      expect(parser[:foo]).to eq "foo"
     end
     
   end
 
   describe "Optional operand with specific help name" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.optional_operand help_name: "the foo"
         end
@@ -938,7 +938,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] [<the foo>]
@@ -950,9 +950,9 @@ describe "integration tests" do
   
   describe "Required operand" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.required_operand
         end
@@ -960,7 +960,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] <foo>
@@ -969,11 +969,11 @@ describe "integration tests" do
     end
 
     it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
+      expect(parser[:foo]).to be_nil
     end
 
     it "is an error when not given" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!([])
       expect(test_harness.output).to eq <<~OUTPUT
         missing argument: <foo>
@@ -982,17 +982,17 @@ describe "integration tests" do
     end
 
     it "is set after parsing when given" do
-      args.parse!(["foo"])
-      expect(args[:foo]).to eq "foo"
+      parser.parse!(["foo"])
+      expect(parser[:foo]).to eq "foo"
     end
     
   end
 
   describe "Required operand with underscores in the key" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo_bar
           arg.required_operand
         end
@@ -1000,7 +1000,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] <foo bar>
@@ -1012,9 +1012,9 @@ describe "integration tests" do
 
   describe "Required operand with specific help name" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.required_operand help_name: "the foo"
         end
@@ -1022,7 +1022,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] <the foo>
@@ -1034,9 +1034,9 @@ describe "integration tests" do
 
   describe "Splat operand" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.splat_operand
         end
@@ -1044,7 +1044,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] [<foo>...]
@@ -1053,31 +1053,31 @@ describe "integration tests" do
     end
 
     it "is nil before parsing" do
-      expect(args[:foo]).to be_nil
+      expect(parser[:foo]).to be_nil
     end
 
     it "accepts no arguments" do
-      args.parse!([])
-      expect(args[:foo]).to eq []
+      parser.parse!([])
+      expect(parser[:foo]).to eq []
     end
 
     it "accepts one argument" do
-      args.parse!(["foo"])
-      expect(args[:foo]).to eq ["foo"]
+      parser.parse!(["foo"])
+      expect(parser[:foo]).to eq ["foo"]
     end
 
     it "accepts two arguments" do
-      args.parse!(["foo", "bar"])
-      expect(args[:foo]).to eq ["foo", "bar"]
+      parser.parse!(["foo", "bar"])
+      expect(parser[:foo]).to eq ["foo", "bar"]
     end
     
   end
 
   describe "Splat operand with specific help name" do
     
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.splat_operand help_name: "the foo"
         end
@@ -1085,7 +1085,7 @@ describe "integration tests" do
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] [<the foo>...]
@@ -1096,30 +1096,30 @@ describe "integration tests" do
   end
 
   it "consumes argv" do
-    args = OptParseBuilder.build_parser do |args|
-      args.add do |arg|
+    parser = OptParseBuilder.build_parser do |parser|
+      parser.add do |arg|
         arg.key :foo
         arg.on "--foo"
       end
-      args.add do |arg|
+      parser.add do |arg|
         arg.key :bar
         arg.optional_operand
       end
-      args.add do |arg|
+      parser.add do |arg|
         arg.key :baz
         arg.splat_operand
       end
     end
     argv = ["--foo", "bar", "baz", "quux"]
-    args.parse!(argv)
+    parser.parse!(argv)
     expect(argv).to be_empty
   end
 
   describe "reset (option without default)" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "--foo"
         end
@@ -1127,19 +1127,19 @@ describe "integration tests" do
     end
 
     it "is set after parsing, but nil after reset" do
-      args.parse!(["--foo"])
-      expect(args[:foo]).to be_truthy
-      args.reset
-      expect(args[:foo]).to be_nil
+      parser.parse!(["--foo"])
+      expect(parser[:foo]).to be_truthy
+      parser.reset
+      expect(parser[:foo]).to be_nil
     end
 
   end
 
   describe "reset (option with default)" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "--foo"
           arg.default "foo"
@@ -1148,19 +1148,19 @@ describe "integration tests" do
     end
 
     it "is set after parsing, but default after reset" do
-      args.parse!(["--foo"])
-      expect(args[:foo]).to be_truthy
-      args.reset
-      expect(args[:foo]).to eq "foo"
+      parser.parse!(["--foo"])
+      expect(parser[:foo]).to be_truthy
+      parser.reset
+      expect(parser[:foo]).to eq "foo"
     end
 
   end
 
   describe "reparse (option without default)" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "--foo"
         end
@@ -1168,19 +1168,19 @@ describe "integration tests" do
     end
 
     it "can be reparsed" do
-      args.parse!(["--foo"])
-      expect(args[:foo]).to be_truthy
-      args.parse!([])
-      expect(args[:foo]).to be_nil
+      parser.parse!(["--foo"])
+      expect(parser[:foo]).to be_truthy
+      parser.parse!([])
+      expect(parser[:foo]).to be_nil
     end
 
   end
 
   describe "reparse (option with default)" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
           arg.on "--foo"
           arg.default "foo"
@@ -1189,44 +1189,44 @@ describe "integration tests" do
     end
 
     it "can be reparsed" do
-      args.parse!(["--foo"])
-      expect(args[:foo]).to be_truthy
-      args.parse!([])
-      expect(args[:foo]).to eq "foo"
+      parser.parse!(["--foo"])
+      expect(parser[:foo]).to be_truthy
+      parser.parse!([])
+      expect(parser[:foo]).to eq "foo"
     end
 
   end
 
   describe "knowing if an argument key is present" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :foo
         end
       end
     end
 
     it "reports that a key is present" do
-      expect(args.has_key?(:foo)).to be_truthy
+      expect(parser.has_key?(:foo)).to be_truthy
     end
 
     it "reports that a key is present (string instead of symbol)" do
-      expect(args.has_key?("foo")).to be_truthy
+      expect(parser.has_key?("foo")).to be_truthy
     end
 
     it "reports that a key not present" do
-      expect(args.has_key?(:bar)).to be_falsey
+      expect(parser.has_key?(:bar)).to be_falsey
     end
     
   end
 
   describe "allowing unparsed operands" do
 
-    let(:args) { OptParseBuilder.build_parser }
+    let(:parser) { OptParseBuilder.build_parser }
 
     it "prohibits unparsed operands by default" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["foo"])
       expect(test_harness.output).to eq <<~OUTPUT
         needless argument: foo
@@ -1235,8 +1235,8 @@ describe "integration tests" do
     end
 
     it "explicitly prohibits unparsed operands" do
-      args.allow_unparsed_operands = false
-      test_harness.args = args
+      parser.allow_unparsed_operands = false
+      test_harness.parser = parser
       test_harness.parse!(["foo"])
       expect(test_harness.output).to eq <<~OUTPUT
         needless argument: foo
@@ -1245,9 +1245,9 @@ describe "integration tests" do
     end
 
     it "explicitly allows unparsed operands" do
-      args.allow_unparsed_operands = true
+      parser.allow_unparsed_operands = true
       argv = ["foo"]
-      args.parse!(argv)
+      parser.parse!(argv)
       expect(argv).to eq ["foo"]
     end
     
@@ -1262,23 +1262,23 @@ describe "integration tests" do
       end
     end
 
-    let(:args1) do
-      OptParseBuilder.build_parser do |args|
-        args.add arg
+    let(:parser1) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add arg
       end
     end
 
-    let(:args2) do
-      OptParseBuilder.build_parser do |args|
-        args.add arg
+    let(:parser2) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add arg
       end
     end
 
     specify do
-      args1.parse!(["1"])
-      args2.parse!(["2"])
-      expect(args1[:foo]).to eq "1"
-      expect(args2[:foo]).to eq "2"
+      parser1.parse!(["1"])
+      parser2.parse!(["2"])
+      expect(parser1[:foo]).to eq "1"
+      expect(parser2[:foo]).to eq "2"
     end
     
   end
@@ -1298,23 +1298,23 @@ describe "integration tests" do
       end
     end
 
-    let(:args1) do
-      OptParseBuilder.build_parser do |args|
-        args.add bundle
+    let(:parser1) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add bundle
       end
     end
 
-    let(:args2) do
-      OptParseBuilder.build_parser do |args|
-        args.add bundle
+    let(:parser2) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add bundle
       end
     end
 
     specify do
-      args1.parse!(["1"])
-      args2.parse!(["2"])
-      expect(args1[:foo]).to eq "1"
-      expect(args2[:foo]).to eq "2"
+      parser1.parse!(["1"])
+      parser2.parse!(["2"])
+      expect(parser1[:foo]).to eq "1"
+      expect(parser2[:foo]).to eq "2"
     end
 
   end
@@ -1354,21 +1354,21 @@ describe "integration tests" do
 
   describe "multiple operands, out of order" do
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add do |arg|
           arg.key :four
           arg.splat_operand
         end
-        args.add do |arg|
+        parser.add do |arg|
           arg.key :one
           arg.required_operand
         end
-        args.add do |arg|
+        parser.add do |arg|
           arg.key :two
           arg.required_operand
         end
-        args.add do |arg|
+        parser.add do |arg|
           arg.key :three
           arg.optional_operand
         end
@@ -1376,11 +1376,11 @@ describe "integration tests" do
     end
 
     it "accepts two operands" do
-      args.parse!(["1", "2"])
-      expect(args[:one]).to eq "1"
-      expect(args[:two]).to eq "2"
-      expect(args[:three]).to be_nil
-      expect(args[:four]).to be_empty
+      parser.parse!(["1", "2"])
+      expect(parser[:one]).to eq "1"
+      expect(parser[:two]).to eq "2"
+      expect(parser[:three]).to be_nil
+      expect(parser[:four]).to be_empty
     end
     
   end
@@ -1413,25 +1413,25 @@ describe "integration tests" do
       end
     end
 
-    let(:args) do
-      OptParseBuilder.build_parser do |args|
-        args.add bundle1
-        args.add bundle2
+    let(:parser) do
+      OptParseBuilder.build_parser do |parser|
+        parser.add bundle1
+        parser.add bundle2
       end
     end
 
     it "accepts two operands" do
-      args.parse!(["1", "2"])
-      expect(args[:one]).to eq "1"
-      expect(args[:two]).to eq "2"
-      expect(args[:three]).to be_nil
-      expect(args[:four]).to be_empty
+      parser.parse!(["1", "2"])
+      expect(parser[:one]).to eq "1"
+      expect(parser[:two]).to eq "2"
+      expect(parser[:three]).to be_nil
+      expect(parser[:four]).to be_empty
     end
     
   end
 
   describe "nested bundles" do
-    let(:args) do
+    let(:parser) do
       inner_bundle = OptParseBuilder.build_bundle do |bundler|
         bundler.add do |arg|
           arg.key :foo
@@ -1441,31 +1441,31 @@ describe "integration tests" do
       outer_bundle = OptParseBuilder.build_bundle do |bundler|
         bundler.add(inner_bundle)
       end
-      OptParseBuilder.build_parser do |args|
-        args.add outer_bundle
+      OptParseBuilder.build_parser do |parser|
+        parser.add outer_bundle
       end
     end
 
     it "should flatten the bundles" do
-      expect(args[:foo]).to eq 1
+      expect(parser[:foo]).to eq 1
     end
     
   end
 
   describe "convert required operand to optional" do
 
-    let(:args) do
+    let(:parser) do
       arg = OptParseBuilder.build_argument do |arg|
         arg.key :foo
         arg.required_operand
       end
-      OptParseBuilder.build_parser do |args|
-        args.add arg.optional
+      OptParseBuilder.build_parser do |parser|
+        parser.add arg.optional
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] [<foo>]
@@ -1477,18 +1477,18 @@ describe "integration tests" do
 
   describe "convert required operand to required" do
 
-    let(:args) do
+    let(:parser) do
       arg = OptParseBuilder.build_argument do |arg|
         arg.key :foo
         arg.required_operand
       end
-      OptParseBuilder.build_parser do |args|
-        args.add arg.required
+      OptParseBuilder.build_parser do |parser|
+        parser.add arg.required
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] <foo>
@@ -1500,18 +1500,18 @@ describe "integration tests" do
 
   describe "convert optional operand to optional" do
 
-    let(:args) do
+    let(:parser) do
       arg = OptParseBuilder.build_argument do |arg|
         arg.key :foo
         arg.optional_operand
       end
-      OptParseBuilder.build_parser do |args|
-        args.add arg.optional
+      OptParseBuilder.build_parser do |parser|
+        parser.add arg.optional
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] [<foo>]
@@ -1523,18 +1523,18 @@ describe "integration tests" do
 
   describe "convert optional operand to required" do
 
-    let(:args) do
+    let(:parser) do
       arg = OptParseBuilder.build_argument do |arg|
         arg.key :foo
         arg.optional_operand
       end
-      OptParseBuilder.build_parser do |args|
-        args.add arg.required
+      OptParseBuilder.build_parser do |parser|
+        parser.add arg.required
       end
     end
 
     it "prints help" do
-      test_harness.args = args
+      test_harness.parser = parser
       test_harness.parse!(["-h"])
       expect(test_harness.output).to eq <<~OUTPUT
         Usage: rspec [options] <foo>
@@ -1545,15 +1545,15 @@ describe "integration tests" do
   end
 
   it "defaults tp parsing ARGV" do
-    args = OptParseBuilder.build_parser do |args|
-      args.add do |arg|
+    parser = OptParseBuilder.build_parser do |parser|
+      parser.add do |arg|
         arg.key :foo
         arg.splat_operand
       end
     end
     with_argv(["1", "2"]) do
-      args.parse!
-      expect(args[:foo]).to eq ["1", "2"]
+      parser.parse!
+      expect(parser[:foo]).to eq ["1", "2"]
       expect(ARGV).to be_empty
     end
   end

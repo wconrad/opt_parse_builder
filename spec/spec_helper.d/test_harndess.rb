@@ -2,10 +2,10 @@ require "stringio"
 
 class TestHarness
 
-  attr_writer :args
+  attr_writer :parser
 
-  def initialize(args = nil)
-    @args = args
+  def initialize(parser = nil)
+    @parser = parser
   end
 
   def output
@@ -18,7 +18,7 @@ class TestHarness
     capture_stdout do
       capture_stderr do
         begin
-          @args.parse!(argv)
+          @parser.parse!(argv)
         rescue SystemExit => e
           status = e.status
         end
