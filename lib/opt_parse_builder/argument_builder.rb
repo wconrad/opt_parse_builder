@@ -1,8 +1,8 @@
-class OptparseBuilder
+class OptParseBuilder
 
   # Builds arguments using a builder style DSL.  You never create an
   # instance of this class yourself.  Instead, an instance is yielded
-  # to you by OptparseBuilder.
+  # to you by OptParseBuilder.
   #
   # # Argument building examples
   #
@@ -14,7 +14,7 @@ class OptparseBuilder
   #
   # With the surrounding code, that would be this:
   #
-  #     arg = OptparseBuilder.build_argument do |arg|
+  #     arg = OptParseBuilder.build_argument do |arg|
   #       arg.key = :foo
   #       arg.on = "-f"
   #     end
@@ -32,7 +32,7 @@ class OptparseBuilder
   #
   # A null argument, having no value or visible effect:
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #     end
   #
   # This has little value to you, but it fell out of the design for
@@ -40,11 +40,11 @@ class OptparseBuilder
   #
   # ## Banner only
   #
-  # An argument with only banner text (but see OptparseBuilder#banner
+  # An argument with only banner text (but see OptParseBuilder#banner
   # for the usual way to do this).  "Banner" is how OptParse describes
   # text that appears at the top of the --help output.
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #       arg.banner "Some banner text"
   #       arg.banner "A second line of banner text"
   #       arg.banner <<~BANNER
@@ -58,11 +58,11 @@ class OptparseBuilder
   # ## Separator only
   #
   # An argument with only separator text (but see
-  # OptparseBuilder#banner for the usual way to do this).  "Separator"
+  # OptParseBuilder#banner for the usual way to do this).  "Separator"
   # is how OptParse describes text that appears at the bottom of the
   # --help output.
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #       arg.serparator "Separator text"
   #       arg.serparator "A second line of separator text"
   #       arg.serparator <<~SERPARATOR
@@ -77,7 +77,7 @@ class OptparseBuilder
   #
   # An argument with a constant value.
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #       arg.key :limit
   #       arg.default 12345
   #     end
@@ -88,7 +88,7 @@ class OptparseBuilder
   #
   # A boolean option (switch) parsed by OptParse:
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #       arg.key :quiet
   #       arg.on "-q", "--quiet", "Suppress normal output"
   #     end
@@ -97,7 +97,7 @@ class OptparseBuilder
   # 
   # A value option parsed by OptParse:
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #       arg.key :iterations
   #       arg.default 100
   #       arg.on "-i", "--iterations=N",
@@ -113,7 +113,7 @@ class OptparseBuilder
   # the operand in the --help text.  Optional and splat arguments can
   # also have a help name override.
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #       arg.key :group
   #       arg.required_operand help_name: "resource group"
   #       arg.optional_operand
@@ -125,7 +125,7 @@ class OptparseBuilder
   # argument to consume, then the value is either nil (if no default
   # was specified), or the specified default value.
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #       arg.key :group_name
   #       arg.default "main"
   #       arg.optional_operand
@@ -136,7 +136,7 @@ class OptparseBuilder
   # A "splat" operand consumes all remaining arguments.  Its value is
   # always an array.
   #
-  #     OptparseBuilder.build_argument do |arg|
+  #     OptParseBuilder.build_argument do |arg|
   #       arg.key :input_path
   #       arg.optional_operand
   #     end
@@ -173,7 +173,7 @@ class OptparseBuilder
     #
     # Simple example:
     #
-    #     arg = OptparseBuilder.build_argument do |arg|
+    #     arg = OptParseBuilder.build_argument do |arg|
     #       arg.key :quiet
     #       arg.on "-q", "Be very veru quiet", "We're hunting rabbit!"
     #     end
@@ -181,7 +181,7 @@ class OptparseBuilder
     # You may split up a long argument list by calling this method
     # more than once.  This is equivalent to the above:
     #
-    #     arg = OptparseBuilder.build_argument do |arg|
+    #     arg = OptParseBuilder.build_argument do |arg|
     #       arg.key :quiet
     #       arg.on "-q", "Be very veru quiet",
     #       arg.on "We're hunting rabbit!"
@@ -191,7 +191,7 @@ class OptparseBuilder
     # to duplicate it, the string _DEFAULT_ is replaced with the
     # argument's default value:
     #
-    #     arg = OptparseBuilder.build_argument do |arg|
+    #     arg = OptParseBuilder.build_argument do |arg|
     #       arg.key :size
     #       arg.default 1024
     #       arg.on "--size=N", Integer,
@@ -212,7 +212,7 @@ class OptparseBuilder
     #
     # Any type of argument may have banner text.
     #
-    # See also OptparseBuilder#banner
+    # See also OptParseBuilder#banner
     def banner(line)
       @banner_lines << line
     end
@@ -223,7 +223,7 @@ class OptparseBuilder
     #
     # Any type of argument may have separator text.
     #
-    # See also OptparseBuilder#separator
+    # See also OptParseBuilder#separator
     def separator(line)
       @separator_lines << line
     end

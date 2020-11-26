@@ -1,22 +1,22 @@
 require "optparse"
 
-require_relative "optparse_builder/argument"
-require_relative "optparse_builder/argument_builder"
-require_relative "optparse_builder/argument_bundle"
-require_relative "optparse_builder/argument_bundle_builder"
-require_relative "optparse_builder/argument_values"
-require_relative "optparse_builder/banner_argument"
-require_relative "optparse_builder/constant_argument"
-require_relative "optparse_builder/errors"
-require_relative "optparse_builder/formats_operand_name"
-require_relative "optparse_builder/has_value"
-require_relative "optparse_builder/null_argument"
-require_relative "optparse_builder/option_argument"
-require_relative "optparse_builder/optional_operand_argument"
-require_relative "optparse_builder/required_operand_argument"
-require_relative "optparse_builder/separator_argument"
-require_relative "optparse_builder/splat_operand_argument"
-require_relative "optparse_builder/stable_sort"
+require_relative "opt_parse_builder/argument"
+require_relative "opt_parse_builder/argument_builder"
+require_relative "opt_parse_builder/argument_bundle"
+require_relative "opt_parse_builder/argument_bundle_builder"
+require_relative "opt_parse_builder/argument_values"
+require_relative "opt_parse_builder/banner_argument"
+require_relative "opt_parse_builder/constant_argument"
+require_relative "opt_parse_builder/errors"
+require_relative "opt_parse_builder/formats_operand_name"
+require_relative "opt_parse_builder/has_value"
+require_relative "opt_parse_builder/null_argument"
+require_relative "opt_parse_builder/option_argument"
+require_relative "opt_parse_builder/optional_operand_argument"
+require_relative "opt_parse_builder/required_operand_argument"
+require_relative "opt_parse_builder/separator_argument"
+require_relative "opt_parse_builder/splat_operand_argument"
+require_relative "opt_parse_builder/stable_sort"
 
 # The "main" class of this library, and the sole entry point.  You
 # never have to (and never should) explicitly refer to any other class
@@ -25,12 +25,12 @@ require_relative "optparse_builder/stable_sort"
 #
 # Minimal example:
 #
-#     parser = OptparseBuilder.new
+#     parser = OptParseBuilder.new
 #     parser.parse!
 #
 # An example with a little bit of everything
 #
-#     parser = OptparseBuilder.new do |args|
+#     parser = OptParseBuilder.new do |args|
 #       args.banner "A short description of the program"
 #       args.add do |arg|
 #         arg.key :output_path
@@ -57,19 +57,19 @@ require_relative "optparse_builder/stable_sort"
 #     p arg_values.size           # An Integer
 #     p arg_values.output_path    # A string
 #     p arg_values.input_paths    # An array of strings
-class OptparseBuilder
+class OptParseBuilder
 
   include StableSort
 
   # Build an argument that can be added to a parser.  Yields an
   # ArgumentBuilder.
   #
-  #     VERBOSE = OptparseBuilder.build_argument do |arg|
+  #     VERBOSE = OptParseBuilder.build_argument do |arg|
   #       arg.key :verbose
   #       arg.on "-v", "--verbose", "Print extra output"
   #     end
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.add VERBOSE
   #     end
   #
@@ -81,7 +81,7 @@ class OptparseBuilder
   # This is most useful when you are building a related suite of
   # programs that share some command-line arguments in common.  Most
   # of the time you will just add the argument using the block form of
-  # OptparseBuilder#add.
+  # OptParseBuilder#add.
   def self.build_argument
     builder = ArgumentBuilder.new
     yield builder
@@ -94,7 +94,7 @@ class OptparseBuilder
   # This is useful when you have a group of arguments that go
   # together:
   #
-  #     bundle = OptparseBuilder.build_bundle do |args|
+  #     bundle = OptParseBuilder.build_bundle do |args|
   #       args.add do |arg|
   #         arg.key :x
   #         op.on "-x", Integer, "X coordinate"
@@ -105,7 +105,7 @@ class OptparseBuilder
   #       end
   #     end
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.add bundle
   #     end
   #
@@ -114,7 +114,7 @@ class OptparseBuilder
   # This is most useful when you are building a related suite of
   # programs that share some command-line arguments in common.  Most
   # of the time you will just add the arguments using the block form
-  # of OptparseBuilder#add.
+  # of OptParseBuilder#add.
   def self.build_bundle
     bundler = ArgumentBundleBuilder.new
     yield bundler
@@ -126,7 +126,7 @@ class OptparseBuilder
   # If `false` (the default), then unparsed arguments cause an
   # error:
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.allow_unparsed_operands = false
   #       args.add do |arg|
   #         arg.key :quiet
@@ -143,7 +143,7 @@ class OptparseBuilder
   # operands to remain in `ARGV` so that they can be used by, for
   # example, `ARGF`:
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.allow_unparsed_operands = true
   #       args.add do |arg|
   #         arg.key :quiet
@@ -162,7 +162,7 @@ class OptparseBuilder
   # Create a new parser.  If called without a block, returns a parser
   # than you can then add arguments to:
   #
-  #     parser = OptparseBuilder.new
+  #     parser = OptParseBuilder.new
   #     parser.add do |arg|
   #       arg.key :force
   #       arg.on "--force", "Force dangerous operation"
@@ -170,7 +170,7 @@ class OptparseBuilder
   #
   # If called with a block, yields itself to the block:
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       arg.key :force
   #       arg.on "--force", "Force dangerous operation"
   #     end
@@ -204,7 +204,7 @@ class OptparseBuilder
   #
   # After parsing, there are numerous ways to access the value of the arguments:
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.add do |arg|
   #         arg.key :num
   #         arg.on "--num=N", Integer, "A number"
@@ -256,7 +256,7 @@ class OptparseBuilder
   #
   # This example:
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.banner "This is my program"
   #       args.banner <<~BANNER
   #         There are many programs like it,
@@ -285,7 +285,7 @@ class OptparseBuilder
   #
   # This example:
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.separator "Here I explain more about my program"
   #       args.separator <<~SEPARATOR
   #         For such a small program,
@@ -310,17 +310,17 @@ class OptparseBuilder
   #
   # Example using a pre-built argument:
   #
-  #     DRY_RUN = OptparseBuilder.build_argument do |arg|
+  #     DRY_RUN = OptParseBuilder.build_argument do |arg|
   #       arg.key :dry_run
   #       arg.on "-d", "--dry-run", "Make no changes"
   #     end
-  #     args = OptparseBuilder.new do |args|
+  #     args = OptParseBuilder.new do |args|
   #       args.add DRY_RUN
   #     end
   #
   # Example using a block to build the argument in-place:
   #
-  #     args = OptparseBuilder.new do |args|
+  #     args = OptParseBuilder.new do |args|
   #       args.add do |arg|
   #         arg.key :dry_run
   #         arg.on "-d", "--dry-run", "Make no changes"
@@ -329,8 +329,8 @@ class OptparseBuilder
   #
   # This is equivalent to:
   #
-  #     args = OptparseBuilder.new do |args|
-  #       args.add OptparseBuilder.build_argument do |arg|
+  #     args = OptParseBuilder.new do |args|
+  #       args.add OptParseBuilder.build_argument do |arg|
   #         arg.key :dry_run
   #         arg.on "-d", "--dry-run", "Make no changes"
   #       end
@@ -354,7 +354,7 @@ class OptparseBuilder
   # Returns the value of an argument, given either a symbol or a
   # string with its name.  If the key does not exist, raises KeyError.
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.add do |arg|
   #         arg.key :x
   #         arg.default 123
@@ -375,7 +375,7 @@ class OptparseBuilder
   # Return a collection with all of the argument values.  The
   # collection can be accessed in several ways:
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.add do |arg|
   #         arg.key :num
   #         arg.on "--num=N", Integer, "A number"
@@ -397,7 +397,7 @@ class OptparseBuilder
   # Return true if the parser has the named key, which may be either a
   # string or a symbol.
   #
-  #     parser = OptparseBuilder.new do |args|
+  #     parser = OptParseBuilder.new do |args|
   #       args.add do |arg|
   #         arg.key :quiet
   #       end

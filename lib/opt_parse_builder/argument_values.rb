@@ -1,4 +1,4 @@
-class OptparseBuilder
+class OptParseBuilder
 
   # Like OpenStruct, in that it allows access as through either a Hash
   # or a Struct, but raises an error if you try to read a value that

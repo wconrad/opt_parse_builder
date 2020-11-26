@@ -1,5 +1,5 @@
-class OptparseBuilder
-  class RequiredOperandArgument < Argument # :nodoc:
+class OptParseBuilder
+  class OptionalOperandArgument < Argument # :nodoc:
 
     include FormatsOperandName
     include HasValue
@@ -10,22 +10,19 @@ class OptparseBuilder
     end
 
     def operand_notation
-      "<#{format_operand_name(@help_name)}>"
+      "[<#{format_operand_name(@help_name)}>]"
     end
 
     def shift_operand(argv)
       @value = argv.shift
-      unless @value
-        raise OptionParser::MissingArgument, operand_notation
-      end
     end
 
     def optional
-      OptionalOperandArgument.new(@key, @default, @help_name)
+      self
     end
 
     def required
-      self
+      RequiredOperandArgument.new(@key, @default, @help_name)
     end
     
   end

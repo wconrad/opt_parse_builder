@@ -1,4 +1,4 @@
-class OptparseBuilder
+class OptParseBuilder
   class BannerArgument < Argument # :nodoc:
 
     attr_reader :banner_lines

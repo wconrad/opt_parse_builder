@@ -1,4 +1,4 @@
-class OptparseBuilder
+class OptParseBuilder
   module HasValue # :nodoc:
 
     attr_reader :key

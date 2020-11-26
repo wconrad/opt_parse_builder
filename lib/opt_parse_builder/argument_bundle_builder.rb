@@ -1,6 +1,6 @@
-class OptparseBuilder
+class OptParseBuilder
 
-  # Yielded by OptparseBuilder.bundle_arguments to create an
+  # Yielded by OptParseBuilder.bundle_arguments to create an
   # ArgumentBundle, a collection of arguments that can be treated as
   # through it is one argument.
   class ArgumentBundleBuilder
@@ -22,7 +22,7 @@ class OptparseBuilder
       if argument
         @argument_bundle << argument
       else
-        @argument_bundle << OptparseBuilder.build_argument(&block)
+        @argument_bundle << OptParseBuilder.build_argument(&block)
       end
     end
 

@@ -1,4 +1,4 @@
-# optparse_builder
+# opt_parse_builder
 
 A Ruby Gem for processing CLI arguments using optparse.  Adds to
 optparse a compact DSL and operand parsing without being a framework.
@@ -48,9 +48,9 @@ It is valuable to provide a simple example which can be modified and
 expanded upon:
 
 ```ruby
-require "optparse_builder"
+require "opt_parse_builder"
 
-arg_parser = OptparseBuilder.new do |args|
+arg_parser = OptParseBuilder.new do |args|
   args.banner "A simple example"
   args.add do |arg|
     arg.key :path
@@ -91,7 +91,7 @@ Or install it yourself as:
 You build an argument parser using a builder style DSL, like this:
 
 ```ruby
-arg_parser = OptparseBuilder.new do |args|
+arg_parser = OptParseBuilder.new do |args|
   args.add do |arg|
     arg.key :verbose
     arg.on "-v", "--verbose", "Be verbose"
@@ -113,12 +113,12 @@ and argument values retrieved using struct or hash notation:
 An argument definition can be created separately from its use:
 
 ```ruby
-VERBOSE = OptparseBuilder.build_argument do |arg|
+VERBOSE = OptParseBuilder.build_argument do |arg|
   arg.key :verbose
   arg.on "-v", "--verbose", "Print extra output"
 end
 
-parser = OptparseBuilder.new do |args|
+parser = OptParseBuilder.new do |args|
   args.add VERBOSE
 end
 ```
@@ -130,10 +130,10 @@ over, you can define them once and then reuse them in each program:
 ```ruby
 # common_arguments.rb
 
-require "optparse_builder"
+require "opt_parse_builder"
 
 module CommonArguments
-  VERBOSE = OptparseBuilder.build_argument do |arg|
+  VERBOSE = OptParseBuilder.build_argument do |arg|
     arg.key :verbose
     arg.on "-v", "--verbose", "Print extra output"
   end
@@ -145,7 +145,7 @@ end
 
 require_relative "common_arguments"
 
-ARG_PARSER = OptparseBuilder.new do |args|
+ARG_PARSER = OptParseBuilder.new do |args|
   args.banner "Read and store the input data"
   args.add do |arg|
     arg.key 
@@ -160,7 +160,7 @@ end
 
 require_relative "common_arguments"
 
-ARG_PARSER = OptparseBuilder.new do |args|
+ARG_PARSER = OptParseBuilder.new do |args|
   args.banner "Print a report based on data previously read"
   args.add CommonArguments::VERBOSE
   args.add do |arg|
@@ -184,7 +184,7 @@ the `.gem` file to [rubygems.org](https://rubygems.org).
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
-https://github.com/wconrad/optparse_builder.
+https://github.com/wconrad/opt_parse_builder.
 
 # Terminology
 

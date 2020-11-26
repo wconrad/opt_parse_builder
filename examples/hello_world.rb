@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require "optparse_builder"
+require "opt_parse_builder"
 
-ARG_PARSER = OptparseBuilder.new do |args|
+ARG_PARSER = OptParseBuilder.new do |args|
   args.banner "A simple example"
   args.add do |arg|
     arg.key :path

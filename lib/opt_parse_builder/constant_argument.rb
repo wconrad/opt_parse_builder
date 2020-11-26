@@ -1,4 +1,4 @@
-class OptparseBuilder
+class OptParseBuilder
   class ConstantArgument < Argument # :nodoc:
 
     attr_reader :key

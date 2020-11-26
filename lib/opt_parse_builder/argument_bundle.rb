@@ -1,4 +1,4 @@
-class OptparseBuilder
+class OptParseBuilder
   class ArgumentBundle < Argument # :nodoc:
 
     def initialize

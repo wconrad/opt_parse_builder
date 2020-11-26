@@ -1,4 +1,4 @@
-class OptparseBuilder
+class OptParseBuilder
   class OptionArgument < Argument # :nodoc:
 
     include HasValue
