@@ -8,6 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Wayne Conrad"]
   spec.email = ["kf7qga@gmail.com"]
   spec.summary = "Builder DSL for optparse, with more"
+  spec.license = 'MIT'
   spec.description = <<~DESCRIPTION
     Processes CLI arguments using optparse.  Adds to optparse a
     compact builder-style DSL, operand (positional argument) parsing,
