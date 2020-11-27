@@ -1474,7 +1474,164 @@ describe "integration tests" do
 
   end
 
-  describe "convert required operand to required" do
+  describe "Convert argument bundle to operand" do
+
+    let(:arg) do
+      OptParseBuilder.build_bundle do |args|
+        args.add { |arg| arg.key :foo }
+        args.add { |arg| arg.key :bar }
+      end
+    end
+
+    it "cannot be converted to a required operand" do
+      expect do
+        arg.required
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+    it "cannot be converted to an optional operand" do
+      expect do
+        arg.optional
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+  end
+
+  describe "Convert banner argument to operand" do
+
+    let(:arg) do
+      OptParseBuilder.build_argument do |arg|
+        arg.banner "banner"
+      end
+    end
+
+    it "cannot be converted to a required operand" do
+      expect do
+        arg.required
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+    it "cannot be converted to an optional operand" do
+      expect do
+        arg.optional
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+  end
+
+  describe "Convert separator argument to operand" do
+
+    let(:arg) do
+      OptParseBuilder.build_argument do |arg|
+        arg.separator "separator"
+      end
+    end
+
+    it "cannot be converted to a required operand" do
+      expect do
+        arg.required
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+    it "cannot be converted to an optional operand" do
+      expect do
+        arg.optional
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+  end
+
+  describe "Convert constant argument to operand" do
+
+    let(:arg) do
+      OptParseBuilder.build_argument do |arg|
+        arg.key :i
+        arg.default 123
+      end
+    end
+
+    it "cannot be converted to a required operand" do
+      expect do
+        arg.required
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+    it "cannot be converted to an optional operand" do
+      expect do
+        arg.optional
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+  end
+
+  describe "Convert null argument to operand" do
+
+    let(:arg) do
+      OptParseBuilder.build_argument do |arg|
+      end
+    end
+
+    it "cannot be converted to a required operand" do
+      expect do
+        arg.required
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+    it "cannot be converted to an optional operand" do
+      expect do
+        arg.optional
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+  end
+
+  describe "Convert option to operand" do
+
+    let(:arg) do
+      OptParseBuilder.build_argument do |arg|
+        arg.key :foo
+        arg.on "-f"
+      end
+    end
+
+    it "cannot be converted to a required operand" do
+      expect do
+        arg.required
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+    it "cannot be converted to an optional operand" do
+      expect do
+        arg.optional
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+  end
+
+  describe "Convert splat operand to operand" do
+
+    let(:arg) do
+      OptParseBuilder.build_argument do |arg|
+        arg.key :paths
+        arg.splat_operand
+      end
+    end
+
+    it "cannot be converted to a required operand" do
+      expect do
+        arg.required
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+    it "cannot be converted to an optional operand" do
+      expect do
+        arg.optional
+      end.to raise_error(OptParseBuilder::BuildError, /cannot convert/)
+    end
+
+  end
+
+  describe "convert required operand to required operand" do
 
     let(:parser) do
       arg = OptParseBuilder.build_argument do |arg|
@@ -1497,7 +1654,7 @@ describe "integration tests" do
 
   end
 
-  describe "convert optional operand to optional" do
+  describe "convert optional operand to optional operand" do
 
     let(:parser) do
       arg = OptParseBuilder.build_argument do |arg|

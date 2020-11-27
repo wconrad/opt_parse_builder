@@ -3,6 +3,12 @@ require "optparse"
 require_relative "stable_sort"
 
 module OptParseBuilder
+
+  # A command-line parser.  Create an instance of this by calling
+  # OptParseBuilder.build_parser.
+  #
+  # Note: The constructor for this class is not part of the public
+  # API.
   class Parser
 
     include StableSort
@@ -199,7 +205,7 @@ module OptParseBuilder
     #       end
     #     end
     #
-    # See ArgumentBuilder for details of the different options available
+    # See the README for details of the different options available
     # for an argument.
     #
     # Raises BuildError if the argument cannot be built or added.

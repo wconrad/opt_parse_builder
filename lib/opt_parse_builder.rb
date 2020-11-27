@@ -106,8 +106,7 @@ module OptParseBuilder
   #       args.add VERBOSE
   #     end
   #
-  # See ArgumentBuilder for details of the different options
-  # avaialable for an argument.
+  # See the README for argument examples.
   #
   # Raises BuildError if the argument cannot be built or added.
   #

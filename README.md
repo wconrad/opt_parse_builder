@@ -172,7 +172,226 @@ ARG_PARSER = OptParseBuilder.build_parser do |args|
 end
 ```
 
-## Development
+When adding a pre-built operand to a parser, you can change change
+it from required to optional:
+
+```
+PATH = OptParseBuilder.build_argument do |arg|
+  arg.key :path
+  arg.required_operand
+end
+
+ARG_PARSER = OptParser.build_parser do |args|
+  args.add PATH.optional
+end
+```
+
+or from optional to required:
+
+```
+PATH = OptParseBuilder.build_argument do |arg|
+  arg.key :path
+  arg.optional_operand
+end
+
+ARG_PARSER = OptParser.build_parser do |args|
+  args.add PATH.required
+end
+```
+
+# Argument Building Examples
+
+Most of these examples use a shorthand where the surrounding code
+is not shown:
+
+    arg.key = :foo
+    arg.on "-f"
+
+With the surrounding code, that would be this:
+
+    parser = OptparserBuilder.new do |args|
+      args.add do |arg|
+        arg.key = :foo
+        arg.on = "-f"
+      end
+    end
+
+or this:
+
+    arg = OptParseBuilder.build_argument do |arg|
+      arg.key = :foo
+      arg.on = "-f"
+    end
+
+## Null argument
+
+A null argument, having no value or visible effect:
+
+    OptParseBuilder.build_argument do |arg|
+    end
+
+This has little value to you, but it fell out of the design for
+free, and it is useful in the implementation.
+
+## Banner only
+
+An argument with only banner text (but see OptParseBuilder#banner
+for the usual way to do this).  "Banner" is how OptParse describes
+text that appears at the top of the --help output.
+
+    OptParseBuilder.build_argument do |arg|
+      arg.banner "Some banner text"
+      arg.banner "A second line of banner text"
+      arg.banner <<~BANNER
+        A third line
+        A fourth line
+      BANNER
+    end
+
+Applicable builder methods:
+
+* banner
+
+Banner text can be added to any argument.
+
+## Separator only
+
+An argument with only separator text (but see
+OptParseBuilder#banner for the usual way to do this).  "Separator"
+is how OptParse describes text that appears at the bottom of the
+--help output.
+
+    OptParseBuilder.build_argument do |arg|
+      arg.serparator "Separator text"
+      arg.serparator "A second line of separator text"
+      arg.serparator <<~SERPARATOR
+        A third line
+        A fourth line
+      SERPARATOR
+    end
+
+Applicable builder methods:
+
+* separator
+
+Separator text can be added to any argument.
+
+## Constant value
+
+An argument with a constant value.
+
+    OptParseBuilder.build_argument do |arg|
+      arg.key :limit
+      arg.default 12345
+    end
+
+Applicable builder methods:
+
+* key
+* default
+* banner (optional)
+* separator (optional)
+
+This is of limited value, but it fell out of the design for free.
+
+## Boolean option (switch)
+
+A boolean option (switch) parsed by OptParse:
+
+    OptParseBuilder.build_argument do |arg|
+      arg.key :quiet
+      arg.on "-q", "--quiet", "Suppress normal output"
+    end
+
+Applicable builder methods:
+
+* key
+* on
+* default (optional)
+* banner (optional)
+* separator (optional)
+
+## Value option
+
+A value option parsed by OptParse:
+
+    OptParseBuilder.build_argument do |arg|
+      arg.key :iterations
+      arg.default 100
+      arg.on "-i", "--iterations=N",
+      arg.on "Number of iterations (default _DEFAULT_)"
+    end
+
+Applicable builder methods:
+
+* key
+* on
+* default (optional)
+* banner (optional)
+* separator (optional)
+
+## Required operand
+
+A required operand consumes one argument, with an error if there
+isn't one to consume.
+
+This example overrides the help name, which is used to describe
+the operand in the --help text.  Optional and splat arguments can
+also have a help name override.
+
+    OptParseBuilder.build_argument do |arg|
+      arg.key :group
+      arg.required_operand help_name: "resource group"
+      arg.optional_operand
+    end
+
+Applicable builder methods:
+
+* key
+* required_operand
+* default (optional)
+* banner (optional)
+* separator (optional)
+
+## Optional operand
+
+An optional operand consumes one argument.  If there isn't an
+argument to consume, then the value is either nil (if no default
+was specified), or the specified default value.
+
+    OptParseBuilder.build_argument do |arg|
+      arg.key :group_name
+      arg.default "main"
+      arg.optional_operand
+    end
+
+Applicable builder methods:
+
+* key
+* optional_operand
+* default (optional)
+* banner (optional)
+* separator (optional)
+
+## Splat Operand
+
+A "splat" operand consumes all remaining arguments.  Its value is
+always an array.
+
+    OptParseBuilder.build_argument do |arg|
+      arg.key :input_path
+      arg.optional_operand
+    end
+
+Applicable builder methods:
+
+* key
+* splat_operand
+* default (optional)
+* banner (optional)
+* separator (optional)
+
+# Development
 
 After checking out the repo, run `bundle` to install dependencies.
 Then run `rake test` to run the tests.
@@ -183,7 +402,7 @@ install`.  To release a new version, update the version number in
 create a git tag for the version, push git commits and tags, and push
 the `.gem` file to [rubygems.org](https://rubygems.org).
 
-## Contributing
+# Contributing
 
 Bug reports and pull requests are welcome on GitHub at
 https://github.com/wconrad/opt_parse_builder.
@@ -192,7 +411,7 @@ https://github.com/wconrad/opt_parse_builder.
 
 These terms are used in this library's code and documentation:
 
-* Argument - An option or operand
+* Argument - An option or operand; a single element of ARGV
 
 * Option - An argument parsed by optparse, like `-v` or `--size=12`
 
