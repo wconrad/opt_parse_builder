@@ -14,6 +14,7 @@ require_relative "opt_parse_builder/null_argument"
 require_relative "opt_parse_builder/option_argument"
 require_relative "opt_parse_builder/optional_operand_argument"
 require_relative "opt_parse_builder/parser"
+require_relative "opt_parse_builder/parser_builder"
 require_relative "opt_parse_builder/required_operand_argument"
 require_relative "opt_parse_builder/separator_argument"
 require_relative "opt_parse_builder/splat_operand_argument"
@@ -61,8 +62,6 @@ require_relative "opt_parse_builder/stable_sort"
 #     p arg_values.input_paths    # An array of strings
 module OptParseBuilder
 
-  include StableSort
-
   # Create a new parser.  If called without a block, returns a parser
   # than you can then add arguments to:
   #
@@ -87,10 +86,10 @@ module OptParseBuilder
   #       arg.on "--size=N", Integer, "File size in bytes"
   #     end
   #    
-  def self.build_parser(&block)
-    parser = Parser.new
-    yield parser if block_given?
-    parser
+  def self.build_parser
+    parser_builder = ParserBuilder.new
+    yield parser_builder if block_given?
+    parser_builder.parser
   end
 
   # Build an argument that can be added to a parser.  Yields an

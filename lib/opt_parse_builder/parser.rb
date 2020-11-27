@@ -48,7 +48,6 @@ module OptParseBuilder
     def initialize # :nodoc:
       @arguments = []
       @allow_unparsed_operands = false
-      yield self if block_given?
     end
 
     # Reset to the state after construction, before #parse! was called.
