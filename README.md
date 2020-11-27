@@ -52,17 +52,17 @@ expanded upon:
 ```ruby
 require "opt_parse_builder"
 
-arg_parser = OptParseBuilder.build_parser do |parser|
-  parser.banner "A simple example"
-  parser.add do |arg|
+arg_parser = OptParseBuilder.build_parser do |args|
+  args.banner "A simple example"
+  args.add do |arg|
     arg.key :path
     arg.required_operand
   end
-  parser.add do |arg|
+  args.add do |arg|
     arg.key :verbose
     arg.on "-v", "--verbose", "Be verbose"
   end
-  parser.separator "Some explanatory text at the bottom"
+  args.separator "Some explanatory text at the bottom"
 end
 
 arg_values = arg_parser.parse!
@@ -93,8 +93,8 @@ Or install it yourself as:
 You build an argument parser using a builder style DSL, like this:
 
 ```ruby
-arg_parser = OptParseBuilder.build_parser do |parser|
-  parser.add do |arg|
+arg_parser = OptParseBuilder.build_parser do |args|
+  args.add do |arg|
     arg.key :verbose
     arg.on "-v", "--verbose", "Be verbose"
   end
@@ -120,8 +120,8 @@ VERBOSE = OptParseBuilder.build_argument do |arg|
   arg.on "-v", "--verbose", "Print extra output"
 end
 
-parser = OptParseBuilder.build_parser do |parser|
-  parser.add VERBOSE
+parser = OptParseBuilder.build_parser do |args|
+  args.add VERBOSE
 end
 ```
 
@@ -147,13 +147,13 @@ end
 
 require_relative "common_arguments"
 
-ARG_PARSER = OptParseBuilder.build_parser do |parser|
-  parser.banner "Read and store the input data"
-  parser.add do |arg|
+ARG_PARSER = OptParseBuilder.build_parser do |args|
+  args.banner "Read and store the input data"
+  args.add do |arg|
     arg.key 
     arg.required_operand
   end
-  parser.add CommonArguments::VERBOSE
+  args.add CommonArguments::VERBOSE
 end
 ```
 
@@ -162,10 +162,10 @@ end
 
 require_relative "common_arguments"
 
-ARG_PARSER = OptParseBuilder.build_parser do |parser|
-  parser.banner "Print a report based on data previously read"
-  parser.add CommonArguments::VERBOSE
-  parser.add do |arg|
+ARG_PARSER = OptParseBuilder.build_parser do |args|
+  args.banner "Print a report based on data previously read"
+  args.add CommonArguments::VERBOSE
+  args.add do |arg|
     arg.key :detail
     arg.on "-d", "--detail", "Add the detail section to the report"
   end

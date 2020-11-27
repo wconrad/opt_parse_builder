@@ -73,9 +73,11 @@ module OptParseBuilder
   #
   # If called with a block, yields itself to the block:
   #
-  #     arg_parser = OptParseBuilder.build_parser do |parser|
-  #       arg.key :force
-  #       arg.on "--force", "Force dangerous operation"
+  #     arg_parser = OptParseBuilder.build_parser do |args|
+  #       args.add do |arg|
+  #         arg.key :force
+  #         arg.on "--force", "Force dangerous operation"
+  #       end
   #     end
   #
   # Note that the parser constructed using the block form can still
@@ -100,8 +102,8 @@ module OptParseBuilder
   #       arg.on "-v", "--verbose", "Print extra output"
   #     end
   #
-  #     arg_parser = OptParseBuilder.build_parser do |parser|
-  #       parser.add VERBOSE
+  #     arg_parser = OptParseBuilder.build_parser do |args|
+  #       args.add VERBOSE
   #     end
   #
   # See ArgumentBuilder for details of the different options
@@ -125,19 +127,19 @@ module OptParseBuilder
   # This is useful when you have a group of arguments that go
   # together:
   #
-  #     bundle = OptParseBuilder.build_bundle do |parser|
-  #       parser.add do |arg|
+  #     bundle = OptParseBuilder.build_bundle do |args|
+  #       args.add do |arg|
   #         arg.key :x
   #         op.on "-x", Integer, "X coordinate"
   #       end
-  #       parser.add do |arg|
+  #       args.add do |arg|
   #         arg.key :y
   #         op.on "-y", Integer, "Y coordinate"
   #       end
   #     end
   #
-  #     arg_parser = OptParseBuilder.build_parser do |parser|
-  #       parser.add bundle
+  #     arg_parser = OptParseBuilder.build_parser do |args|
+  #       args.add bundle
   #     end
   #
   # Raises BuildError if the argument cannot be built or added.

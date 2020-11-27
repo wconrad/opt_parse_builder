@@ -12,9 +12,9 @@ module OptParseBuilder
     # If `false` (the default), then unparsed arguments cause an
     # error:
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.allow_unparsed_operands = false
-    #       parser.add do |arg|
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.allow_unparsed_operands = false
+    #       args.add do |arg|
     #         arg.key :quiet
     #         arg.on "-q", "--quiet", "Suppress normal output"
     #       end
@@ -29,9 +29,9 @@ module OptParseBuilder
     # operands to remain in `ARGV` so that they can be used by, for
     # example, `ARGF`:
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.allow_unparsed_operands = true
-    #       parser.add do |arg|
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.allow_unparsed_operands = true
+    #       args.add do |arg|
     #         arg.key :quiet
     #         arg.on "-q", "--quiet", "Suppress normal output"
     #       end
@@ -65,8 +65,8 @@ module OptParseBuilder
     #
     # After parsing, there are numerous ways to access the value of the arguments:
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.add do |arg|
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.add do |arg|
     #         arg.key :num
     #         arg.on "--num=N", Integer, "A number"
     #       end
@@ -117,9 +117,9 @@ module OptParseBuilder
     #
     # This example:
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.banner "This is my program"
-    #       parser.banner <<~BANNER
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.banner "This is my program"
+    #       args.banner <<~BANNER
     #         There are many programs like it,
     #         but this program is mine.
     #       BANNER
@@ -147,9 +147,9 @@ module OptParseBuilder
     #
     # This example:
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.separator "Here I explain more about my program"
-    #       parser.separator <<~SEPARATOR
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.separator "Here I explain more about my program"
+    #       args.separator <<~SEPARATOR
     #         For such a small program,
     #         it has a lot of text at the end.
     #       SEPARATOR
@@ -177,14 +177,14 @@ module OptParseBuilder
     #       arg.key :dry_run
     #       arg.on "-d", "--dry-run", "Make no changes"
     #     end
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.add DRY_RUN
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.add DRY_RUN
     #     end
     #
     # Example using a block to build the argument in-place:
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.add do |arg|
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.add do |arg|
     #         arg.key :dry_run
     #         arg.on "-d", "--dry-run", "Make no changes"
     #       end
@@ -192,8 +192,8 @@ module OptParseBuilder
     #
     # This is equivalent to:
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.add OptParseBuilder.build_argument do |arg|
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.add OptParseBuilder.build_argument do |arg|
     #         arg.key :dry_run
     #         arg.on "-d", "--dry-run", "Make no changes"
     #       end
@@ -217,8 +217,8 @@ module OptParseBuilder
     # Returns the value of an argument, given either a symbol or a
     # string with its name.  If the key does not exist, raises KeyError.
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.add do |arg|
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.add do |arg|
     #         arg.key :x
     #         arg.default 123
     #       end
@@ -238,8 +238,8 @@ module OptParseBuilder
     # Return a collection with all of the argument values.  The
     # collection can be accessed in several ways:
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.add do |arg|
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.add do |arg|
     #         arg.key :num
     #         arg.on "--num=N", Integer, "A number"
     #       end
@@ -260,8 +260,8 @@ module OptParseBuilder
     # Return true if the parser has the named key, which may be either a
     # string or a symbol.
     #
-    #     arg_parser = OptParseBuilder.build_parser do |parser|
-    #       parser.add do |arg|
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.add do |arg|
     #         arg.key :quiet
     #       end
     #     end

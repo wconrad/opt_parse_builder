@@ -21,8 +21,8 @@ module OptParseBuilder
   #
   # or this:
   #
-  #     parser = OptparserBuilder.new do |parser|
-  #       parser.add do |arg|
+  #     parser = OptparserBuilder.new do |args|
+  #       args.add do |arg|
   #         arg.key = :foo
   #         arg.on = "-f"
   #       end

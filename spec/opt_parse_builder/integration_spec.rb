@@ -62,8 +62,8 @@ describe "integration tests" do
   describe "Argument with only a key" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
         end
       end
@@ -92,8 +92,8 @@ describe "integration tests" do
   describe "Argument with string key" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key "foo"
         end
       end
@@ -122,8 +122,8 @@ describe "integration tests" do
   describe "Argument with only a key and default" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
@@ -153,8 +153,8 @@ describe "integration tests" do
   describe "Argument with a key, a default, and a banner line" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.default "foo"
           arg.banner "There must be foo"
@@ -186,9 +186,9 @@ describe "integration tests" do
   describe "Banner outside of an argument" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.banner "Some banner text"
-        parser.banner "Some more banner text"
+      OptParseBuilder.build_parser do |args|
+        args.banner "Some banner text"
+        args.banner "Some more banner text"
       end
     end
 
@@ -207,8 +207,8 @@ describe "integration tests" do
   describe "Banner only" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.banner "Some banner text"
           arg.banner "Some more banner text"
         end
@@ -231,9 +231,9 @@ describe "integration tests" do
   describe "Separator outside of an argument" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.separator "Text at the end"
-        parser.separator "More text at the end"
+      OptParseBuilder.build_parser do |args|
+        args.separator "Text at the end"
+        args.separator "More text at the end"
       end
     end
 
@@ -252,8 +252,8 @@ describe "integration tests" do
   describe "Separator only" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.separator "Text at the end"
           arg.separator "More text at the end"
         end
@@ -276,8 +276,8 @@ describe "integration tests" do
   describe "Option with banner" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
           arg.banner "Banner text for foo"
@@ -301,8 +301,8 @@ describe "integration tests" do
   describe "Option with separator" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
           arg.separator "Separator text for foo"
@@ -326,8 +326,8 @@ describe "integration tests" do
   describe "Simple option (switch), no default" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "-f", "--foo", "Do the foo thing"
         end
@@ -363,8 +363,8 @@ describe "integration tests" do
   describe "Simple option (switch) with default" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.default false
           arg.on "-f", "--foo", "Do the foo thing"
@@ -401,8 +401,8 @@ describe "integration tests" do
   describe "Option with value, no default" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "--foo=VALUE", "Set foo to VALUE"
         end
@@ -438,8 +438,8 @@ describe "integration tests" do
   describe "Option with value, with default" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.default "default"
           arg.on "--foo=VALUE", "Set foo to VALUE (_DEFAULT_)"
@@ -476,8 +476,8 @@ describe "integration tests" do
   describe "Option with value, specified over multiple lines" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "--foo=INT"
           arg.on Integer
@@ -514,8 +514,8 @@ describe "integration tests" do
 
   specify "Option must have a key" do
     expect do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.on "-f", "--foo", "Do the foo thing"
         end
       end
@@ -550,8 +550,8 @@ describe "integration tests" do
         arg.key :foo
         arg.on "-f", "--foo", "Do the foo thing"
       end
-      OptParseBuilder.build_parser do |parser|
-        parser.add arg
+      OptParseBuilder.build_parser do |args|
+        args.add arg
       end
     end
 
@@ -596,8 +596,8 @@ describe "integration tests" do
   describe "accessing values in the OptParseBuilder" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
@@ -617,8 +617,8 @@ describe "integration tests" do
   describe "values collection, from constant" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
@@ -635,8 +635,8 @@ describe "integration tests" do
   describe "values collection, from option" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on("--foo")
         end
@@ -654,8 +654,8 @@ describe "integration tests" do
   describe "values collection, from optional operand" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.optional_operand
         end
@@ -673,8 +673,8 @@ describe "integration tests" do
   describe "values collection, from required operand" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.required_operand
         end
@@ -692,8 +692,8 @@ describe "integration tests" do
   describe "values collection, from splat operand" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.splat_operand
         end
@@ -711,8 +711,8 @@ describe "integration tests" do
   describe "values collection, various methods of accessing" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
@@ -751,8 +751,8 @@ describe "integration tests" do
   describe "parse! returns a value collection" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.default "foo"
         end
@@ -770,8 +770,8 @@ describe "integration tests" do
   describe "bare argument" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
         end
       end
     end
@@ -802,8 +802,8 @@ describe "integration tests" do
           arg.banner "Another banner line"
         end
       end
-      OptParseBuilder.build_parser do |parser|
-        parser.add bundle
+      OptParseBuilder.build_parser do |args|
+        args.add bundle
       end
     end
 
@@ -833,8 +833,8 @@ describe "integration tests" do
         bundler.add arg1
         bundler.add arg2
       end
-      OptParseBuilder.build_parser do |parser|
-        parser.add bundle
+      OptParseBuilder.build_parser do |args|
+        args.add bundle
       end
     end
 
@@ -893,8 +893,8 @@ describe "integration tests" do
   describe "Optional operand" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.optional_operand
         end
@@ -929,8 +929,8 @@ describe "integration tests" do
   describe "Optional operand with specific help name" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.optional_operand help_name: "the foo"
         end
@@ -951,8 +951,8 @@ describe "integration tests" do
   describe "Required operand" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.required_operand
         end
@@ -991,8 +991,8 @@ describe "integration tests" do
   describe "Required operand with underscores in the key" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo_bar
           arg.required_operand
         end
@@ -1013,8 +1013,8 @@ describe "integration tests" do
   describe "Required operand with specific help name" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.required_operand help_name: "the foo"
         end
@@ -1035,8 +1035,8 @@ describe "integration tests" do
   describe "Splat operand" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.splat_operand
         end
@@ -1076,8 +1076,8 @@ describe "integration tests" do
   describe "Splat operand with specific help name" do
     
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.splat_operand help_name: "the foo"
         end
@@ -1096,16 +1096,16 @@ describe "integration tests" do
   end
 
   it "consumes argv" do
-    parser = OptParseBuilder.build_parser do |parser|
-      parser.add do |arg|
+    parser = OptParseBuilder.build_parser do |args|
+      args.add do |arg|
         arg.key :foo
         arg.on "--foo"
       end
-      parser.add do |arg|
+      args.add do |arg|
         arg.key :bar
         arg.optional_operand
       end
-      parser.add do |arg|
+      args.add do |arg|
         arg.key :baz
         arg.splat_operand
       end
@@ -1118,8 +1118,8 @@ describe "integration tests" do
   describe "reset (option without default)" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "--foo"
         end
@@ -1138,8 +1138,8 @@ describe "integration tests" do
   describe "reset (option with default)" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "--foo"
           arg.default "foo"
@@ -1159,8 +1159,8 @@ describe "integration tests" do
   describe "reparse (option without default)" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "--foo"
         end
@@ -1178,9 +1178,8 @@ describe "integration tests" do
 
   describe "reparse (option with default)" do
 
-    let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+    let(:parser) do OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
           arg.on "--foo"
           arg.default "foo"
@@ -1200,8 +1199,8 @@ describe "integration tests" do
   describe "knowing if an argument key is present" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :foo
         end
       end
@@ -1263,14 +1262,14 @@ describe "integration tests" do
     end
 
     let(:parser1) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add arg
+      OptParseBuilder.build_parser do |args|
+        args.add arg
       end
     end
 
     let(:parser2) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add arg
+      OptParseBuilder.build_parser do |args|
+        args.add arg
       end
     end
 
@@ -1299,14 +1298,14 @@ describe "integration tests" do
     end
 
     let(:parser1) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add bundle
+      OptParseBuilder.build_parser do |args|
+        args.add bundle
       end
     end
 
     let(:parser2) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add bundle
+      OptParseBuilder.build_parser do |args|
+        args.add bundle
       end
     end
 
@@ -1355,20 +1354,20 @@ describe "integration tests" do
   describe "multiple operands, out of order" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add do |arg|
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
           arg.key :four
           arg.splat_operand
         end
-        parser.add do |arg|
+        args.add do |arg|
           arg.key :one
           arg.required_operand
         end
-        parser.add do |arg|
+        args.add do |arg|
           arg.key :two
           arg.required_operand
         end
-        parser.add do |arg|
+        args.add do |arg|
           arg.key :three
           arg.optional_operand
         end
@@ -1414,9 +1413,9 @@ describe "integration tests" do
     end
 
     let(:parser) do
-      OptParseBuilder.build_parser do |parser|
-        parser.add bundle1
-        parser.add bundle2
+      OptParseBuilder.build_parser do |args|
+        args.add bundle1
+        args.add bundle2
       end
     end
 
@@ -1441,8 +1440,8 @@ describe "integration tests" do
       outer_bundle = OptParseBuilder.build_bundle do |bundler|
         bundler.add(inner_bundle)
       end
-      OptParseBuilder.build_parser do |parser|
-        parser.add outer_bundle
+      OptParseBuilder.build_parser do |args|
+        args.add outer_bundle
       end
     end
 
@@ -1459,8 +1458,8 @@ describe "integration tests" do
         arg.key :foo
         arg.required_operand
       end
-      OptParseBuilder.build_parser do |parser|
-        parser.add arg.optional
+      OptParseBuilder.build_parser do |args|
+        args.add arg.optional
       end
     end
 
@@ -1482,8 +1481,8 @@ describe "integration tests" do
         arg.key :foo
         arg.required_operand
       end
-      OptParseBuilder.build_parser do |parser|
-        parser.add arg.required
+      OptParseBuilder.build_parser do |args|
+        args.add arg.required
       end
     end
 
@@ -1505,8 +1504,8 @@ describe "integration tests" do
         arg.key :foo
         arg.optional_operand
       end
-      OptParseBuilder.build_parser do |parser|
-        parser.add arg.optional
+      OptParseBuilder.build_parser do |args|
+        args.add arg.optional
       end
     end
 
@@ -1528,8 +1527,8 @@ describe "integration tests" do
         arg.key :foo
         arg.optional_operand
       end
-      OptParseBuilder.build_parser do |parser|
-        parser.add arg.required
+      OptParseBuilder.build_parser do |args|
+        args.add arg.required
       end
     end
 
@@ -1545,8 +1544,8 @@ describe "integration tests" do
   end
 
   it "defaults tp parsing ARGV" do
-    parser = OptParseBuilder.build_parser do |parser|
-      parser.add do |arg|
+    parser = OptParseBuilder.build_parser do |args|
+      args.add do |arg|
         arg.key :foo
         arg.splat_operand
       end
