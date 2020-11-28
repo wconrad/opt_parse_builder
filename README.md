@@ -393,6 +393,12 @@ Applicable builder methods:
 * banner (optional)
 * separator (optional)
 
+# Ruby versions supported
+
+* 2.5
+* 2.6
+* 2.7
+
 # Development
 
 After checking out the repo, run `bundle` to install dependencies.
