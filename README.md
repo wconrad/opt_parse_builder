@@ -294,9 +294,9 @@ Applicable builder methods:
 
 This is of limited value, but it fell out of the design for free.
 
-## Boolean option (switch)
+## Simple option
 
-A boolean option (switch) parsed by OptParse:
+A simple option parsed by OptParse:
 
     OptParseBuilder.build_argument do |arg|
       arg.key :quiet
@@ -308,10 +308,11 @@ Applicable builder methods:
 * key
 * on
 * default (optional)
+* handler (optional)
 * banner (optional)
 * separator (optional)
 
-## Value option
+## Option with value
 
 A value option parsed by OptParse:
 
@@ -327,6 +328,7 @@ Applicable builder methods:
 * key
 * on
 * default (optional)
+* handler (optional)
 * banner (optional)
 * separator (optional)
 

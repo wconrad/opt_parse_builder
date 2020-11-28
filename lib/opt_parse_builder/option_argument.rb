@@ -3,14 +3,17 @@ module OptParseBuilder
 
     include HasValue
 
-    def initialize(key, default, on)
+    DEFAULT_HANDLER = ->(argument, value) { argument.value = value }
+
+    def initialize(key, default, on, handler)
       init_value(key, default)
       @on = on
+      @handler = handler || DEFAULT_HANDLER
     end
 
     def apply_option(op)
-      op.on(*edited_on) do |v|
-        @value = v
+      op.on(*edited_on) do |value|
+        @handler.call(self, value)
       end
     end
 

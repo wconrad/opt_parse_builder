@@ -11,6 +11,7 @@ module OptParseBuilder
       @key = nil
       @default = nil
       @on = []
+      @handler = nil
       @operand_class = nil
       @operand_help_name = nil
       @banner_lines = []
@@ -69,6 +70,34 @@ module OptParseBuilder
     #     --size-N               Size in bytes (default 1024)
     def on(*option_args)
       @on.concat(option_args)
+    end
+
+    # Set a handler, a proc that will will process the argument's
+    # value.  The proc takes two arguments:
+    #
+    # * The Argument
+    # * The value
+    #
+    # If no handler is set, it defaults to
+    #
+    #     `->(argument, value) { argument.value = value }
+    #
+    # Applies to these argument types:
+    #
+    # * Simple option
+    # * Option with value
+    #
+    # Example:
+    #
+    #     arg = OptParseBuilder.build_argument do |arg|
+    #       arg.key :square
+    #       arg.on "-v", "Increase verbosity (can give more than once)"
+    #       arg.handler do |argument, _value|
+    #         argument.value += 1
+    #       end
+    #     end
+    def handler(&block)
+      @handler = block
     end
 
     # Add to the banner text shown first in the --help output.  You
@@ -130,7 +159,7 @@ module OptParseBuilder
         bundle << SeparatorArgument.new(@separator_lines)
       end
       if !@on.empty?
-        bundle << OptionArgument.new(@key, @default, @on)
+        bundle << OptionArgument.new(@key, @default, @on, @handler)
       elsif @operand_class
         bundle << @operand_class.new(
           @key,

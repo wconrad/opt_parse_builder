@@ -8,7 +8,16 @@ module OptParseBuilder
     def key # :nodoc:
     end
 
-    def value # :nodoc:
+    # Get an argument's value.  Returns nil if the argument has no
+    # value.  This is made public for the use of a handler proc (See
+    # ArgumentBuilder#handler).
+    def value
+    end
+
+    # Set the argument's value.  Does nothing if the argument has no
+    # value.  This is made public for the use of a handler proc (See
+    # ArgumentBuilder#handler).
+    def value=(_v)
     end
 
     def banner_lines # :nodoc:
@@ -22,10 +31,10 @@ module OptParseBuilder
       []
     end
 
-    def apply_option(op) # :nodoc:
+    def apply_option(_op) # :nodoc:
     end
 
-    def shift_operand(argv) # :nodoc:
+    def shift_operand(_argv) # :nodoc:
     end
 
     def reset # :nodoc:

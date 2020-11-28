@@ -323,7 +323,7 @@ describe "integration tests" do
 
   end
 
-  describe "Simple option (switch), no default" do
+  describe "Simple option, no default" do
 
     let(:parser) do
       OptParseBuilder.build_parser do |args|
@@ -360,7 +360,7 @@ describe "integration tests" do
 
   end
 
-  describe "Simple option (switch) with default" do
+  describe "Simple option with default" do
 
     let(:parser) do
       OptParseBuilder.build_parser do |args|
@@ -394,6 +394,43 @@ describe "integration tests" do
     it "is true after parsing when selected" do
       parser.parse!(["-f"])
       expect(parser[:foo]).to eq true
+    end
+    
+  end
+
+  describe "Simple option with handler" do
+
+    let(:parser) do
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
+          arg.key :verbose
+          arg.default 0
+          arg.on "-v", "--verbose"
+          arg.on "Increase output (can give more than once)"
+          arg.handler do |argument, _value|
+            argument.value += 1
+          end
+        end
+      end
+    end
+
+    it "is default before parsing" do
+      expect(parser[:verbose]).to eq 0
+    end
+
+    it "is default after parsing when not selected" do
+      parser.parse!([])
+      expect(parser[:verbose]).to eq 0
+    end
+
+    it "is set once, using the handler" do
+      parser.parse!(["-v"])
+      expect(parser[:verbose]).to eq 1
+    end
+
+    it "is set twice, using the handler" do
+      parser.parse!(["-vv"])
+      expect(parser[:verbose]).to eq 2
     end
     
   end
@@ -508,6 +545,36 @@ describe "integration tests" do
     it "is the appropriate value when set" do
       parser.parse!(["--foo=123"])
       expect(parser[:foo]).to eq 123
+    end
+    
+  end
+
+  describe "Option with value and handler" do
+
+    let(:parser) do
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "--square=N", Integer, "Do the foo thing"
+          arg.handler do |argument, value|
+            argument.value = value ** 2
+          end
+        end
+      end
+    end
+
+    it "is nil before parsing" do
+      expect(parser[:foo]).to be_nil
+    end
+
+    it "is nil after parsing when not selected" do
+      parser.parse!([])
+      expect(parser[:foo]).to be_nil
+    end
+
+    it "is set to the translator output when parsing" do
+      parser.parse!(["--square=16"])
+      expect(parser[:foo]).to eq 256
     end
     
   end

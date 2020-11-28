@@ -2,7 +2,7 @@ module OptParseBuilder
   module HasValue # :nodoc:
 
     attr_reader :key
-    attr_reader :value
+    attr_accessor :value
 
     def init_value(key, default)
       unless key
