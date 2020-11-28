@@ -13,8 +13,8 @@ Features:
   use](#label-Composability), allowing common arguments to be shared
   shared within a suite of programs.
 
-* Operand parsing - Adds parsing of operands (aka positional
-  arguments).
+* Operand parsing - Adds [parsing of
+  operands](#label-Required+Operand)) (aka positional arguments)
 
 * Builds on solid ground - Uses tried and true OptParse.
 
@@ -332,7 +332,7 @@ Applicable builder methods:
 * banner (optional)
 * separator (optional)
 
-## Required operand
+## Required Operand
 
 A required operand consumes one argument, with an error if there
 isn't one to consume.
