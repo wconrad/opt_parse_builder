@@ -2,8 +2,8 @@
 
 A Ruby Gem for processing CLI arguments using optparse.  Adds to
 optparse a compact builder-style DSL, operand (positional argument)
-parsing, and composability for sharing argument definitions within a
-suite of commands.
+parsing, and easy sharing of argument definitions within a suite of
+commands.
 
 Features:
 
@@ -125,9 +125,15 @@ parser = OptParseBuilder.build_parser do |args|
 end
 ```
 
+### Use in program suites
+
 This is especially useful where a suite of programs share some
 arguments in common.  Instead of defining common arguments over and
-over, you can define them once and then reuse them in each program:
+over, you can define them once and then reuse them in each program.
+
+*Design note* This is the reason this library was created.  Other
+solutions I found for sharing common CLI options required the programs
+to be part of a framework; I wanted something that worked by itself.
 
 ```ruby
 # common_arguments.rb
@@ -171,6 +177,8 @@ ARG_PARSER = OptParseBuilder.build_parser do |args|
   end
 end
 ```
+
+### Switching between required and optional
 
 When adding a pre-built operand to a parser, you can change change
 it from required to optional:
@@ -323,6 +331,9 @@ A value option parsed by OptParse:
       arg.on "Number of iterations (default _DEFAULT_)"
     end
 
+The string "_DEFAULT_" is replaced with the default value (in this
+example, "100").
+
 Applicable builder methods:
 
 * key
@@ -392,6 +403,16 @@ Applicable builder methods:
 * default (optional)
 * banner (optional)
 * separator (optional)
+
+# Error handling and abnormal termination
+
+The invokation of help via "-h" or "--help" prints out the program
+help and ends the program with exitcode 0.
+
+Errors during building result in an uncaught BuildError.
+
+OptParse errors are handled by Kernel#abort, which prints the error to
+$stderr and ends the program with exit code 1.
 
 # Ruby versions supported
 
