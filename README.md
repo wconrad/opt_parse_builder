@@ -37,7 +37,7 @@ Features:
 * Fully documented - Includes full code documentation and examples.
 
 * Stable API - Uses [semantic
-  versioning](ttps://semver.org/spec/v2.0.0.html).  Promises not to
+  versioning](#label-Versioning).  Promises not to
   break your program without incrementing the major version number.
 
 * Programmed simply - Easy to understand and modify.
@@ -398,6 +398,17 @@ Applicable builder methods:
 * 2.5
 * 2.6
 * 2.7
+
+# Versioning
+
+This library uses [semantic
+versioning](https://semver.org/spec/v2.0.0.html).  As long as you
+stick to the public API, upgrades to this library will not break your
+program without incrementing the major version number.
+
+The public API is that document using RDOC comments.
+If a class or method is documented with `# :nodoc:`, then it's not
+part of the public API.
 
 # Development
 
