@@ -419,6 +419,7 @@ $stderr and ends the program with exit code 1.
 * 2.5
 * 2.6
 * 2.7
+* 3.0
 
 # Versioning
 
