@@ -5,6 +5,6 @@
 * Update gems
 * Update Ruby to 3.4.4
 
-# 0.1.0
+# 0.1.0 - 2020-11-28
 
 * Initial release
