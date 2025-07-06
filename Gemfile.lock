@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    opt_parse_builder (0.1.0)
+    opt_parse_builder (0.2.0)
 
 GEM
   remote: https://rubygems.org/
