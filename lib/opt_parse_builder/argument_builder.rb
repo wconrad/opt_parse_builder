@@ -41,7 +41,7 @@ module OptParseBuilder
     #
     #     arg = OptParseBuilder.build_argument do |arg|
     #       arg.key :quiet
-    #       arg.on "-q", "Be very veru quiet", "We're hunting rabbit!"
+    #       arg.on "-q", "Be very very quiet", "We're hunting rabbit!"
     #     end
     #
     # You may split up a long argument list by calling this method
@@ -49,7 +49,7 @@ module OptParseBuilder
     #
     #     arg = OptParseBuilder.build_argument do |arg|
     #       arg.key :quiet
-    #       arg.on "-q", "Be very veru quiet",
+    #       arg.on "-q", "Be very very quiet",
     #       arg.on "We're hunting rabbit!"
     #     end
     #
