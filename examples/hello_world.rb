@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require "opt_parse_builder"
+require_relative "lib/setup_example"
 
 ARG_PARSER = OptParseBuilder.build_parser do |args|
   args.banner "A simple example"
