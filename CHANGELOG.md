@@ -3,7 +3,7 @@
 # Development
 
 * Update gems
-* Update Ruby to 3.4.2
+* Update Ruby to 3.4.4
 
 # 0.1.0
 
