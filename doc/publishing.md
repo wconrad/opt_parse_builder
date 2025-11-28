@@ -2,9 +2,9 @@ Publishing a New Release
 
 # Checklist
 
-* Run tests: `rake`
 * Update `lib/opt_parse_builder/version.rb`
 * Update `CHANGELOG.md` with version and date
+* Run tests: `rake`
 * Commit: `git commit -am "Bump version to X.X.X"`
 * Release: `rake release`
 * Verify at https://rubygems.org/gems/opt_parse_builder
