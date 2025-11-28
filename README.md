@@ -270,12 +270,12 @@ is how OptParse describes text that appears at the bottom of the
 --help output.
 
     OptParseBuilder.build_argument do |arg|
-      arg.serparator "Separator text"
-      arg.serparator "A second line of separator text"
-      arg.serparator <<~SERPARATOR
+      arg.separator "Separator text"
+      arg.separator "A second line of separator text"
+      arg.separator <<~SEPARATOR
         A third line
         A fourth line
-      SERPARATOR
+      SEPARATOR
     end
 
 Applicable builder methods:
