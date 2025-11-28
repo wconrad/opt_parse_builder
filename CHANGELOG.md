@@ -2,6 +2,7 @@
 
 # Development
 
+* Update gems
 * Update Ruby to 3.4.7
 
 # 0.2.0 - 2025-07-06
