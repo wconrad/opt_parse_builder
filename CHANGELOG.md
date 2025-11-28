@@ -2,6 +2,12 @@
 
 # Development
 
+* Add footer method for text at bottom of help output (recommended)
+* Add footer: parameter to separator method
+  - separator(line, footer: true) - deprecated, emits warning
+  - separator(line, footer: false) - new positional behavior
+  - Provides clear migration path to v2.0.0
+
 # 1.0.0 - 2025-11-28
 
 * Declare API stability by bumping version to 1.0.0

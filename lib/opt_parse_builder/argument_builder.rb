@@ -16,6 +16,7 @@ module OptParseBuilder
       @operand_help_name = nil
       @banner_lines = []
       @separator_lines = []
+      @footer_lines = []
     end
 
     # Set the argument's key.  Accepts either a string or a symbol.
@@ -115,11 +116,38 @@ module OptParseBuilder
     # may call this more than once; each call adds another line of
     # text to the separator.
     #
+    # The footer: parameter controls where the text appears:
+    # * footer: true (default in v1.x) - text appears at bottom
+    #   (DEPRECATED: use footer method instead)
+    # * footer: false - text appears positionally between options
+    #   (will be default in v2.0.0)
+    #
     # Any type of argument may have separator text.
     #
-    # See also OptParseBuilder#separator
-    def separator(line)
-      @separator_lines << line
+    # See also OptParseBuilder#separator and OptParseBuilder#footer
+    def separator(line, footer: true)
+      if footer
+        warn "separator with footer text is deprecated and will" +
+          " become positional in v2.0.0. Use footer(line) instead or" +
+          " separator(line, footer: false) for positional."
+        @footer_lines << line
+      else
+        @separator_lines << line
+      end
+    end
+
+    # Add to the footer text shown at the bottom of --help output.
+    # You may call this more than once; each call adds another line
+    # of text to the footer.
+    #
+    # This is the recommended way to add text at the bottom of help
+    # output in v1.1.0 and later.
+    #
+    # Any type of argument may have footer text.
+    #
+    # See also OptParseBuilder#footer
+    def footer(line)
+      @footer_lines << line
     end
 
     # Declare the operand to be an optional operand.  An optional
@@ -155,9 +183,6 @@ module OptParseBuilder
       unless @banner_lines.empty?
         bundle << BannerArgument.new(@banner_lines)
       end
-      unless @separator_lines.empty?
-        bundle << SeparatorArgument.new(@separator_lines)
-      end
       if !@on.empty?
         bundle << OptionArgument.new(@key, @default, @on, @handler)
       elsif @operand_class
@@ -170,6 +195,12 @@ module OptParseBuilder
         if @key || @default
           bundle << ConstantArgument.new(@key, @default)
         end
+      end
+      unless @separator_lines.empty?
+        bundle << SeparatorArgument.new(@separator_lines)
+      end
+      unless @footer_lines.empty?
+        bundle << FooterArgument.new(@footer_lines)
       end
       bundle.simplify
     end

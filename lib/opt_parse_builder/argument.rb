@@ -31,6 +31,10 @@ module OptParseBuilder
       []
     end
 
+    def footer_lines # :nodoc:
+      []
+    end
+
     def apply_option(_op) # :nodoc:
     end
 

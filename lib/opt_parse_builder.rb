@@ -8,6 +8,7 @@ require_relative "opt_parse_builder/argument_values"
 require_relative "opt_parse_builder/banner_argument"
 require_relative "opt_parse_builder/constant_argument"
 require_relative "opt_parse_builder/errors"
+require_relative "opt_parse_builder/footer_argument"
 require_relative "opt_parse_builder/formats_operand_name"
 require_relative "opt_parse_builder/has_value"
 require_relative "opt_parse_builder/null_argument"
@@ -53,7 +54,7 @@ require_relative "opt_parse_builder/stable_sort"
 #         arg.on "--size=N", Integer
 #         arg.on "Size in bytes (default _DEFAULT_)"
 #       end
-#       parser.separator "Explanatory text at the bottom"
+#       parser.footer "Explanatory text at the bottom"
 #     end
 #     arg_values = arg_parser.parse!
 #     p arg_values.quiet          # nil or true

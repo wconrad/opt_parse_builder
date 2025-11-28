@@ -1,6 +1,8 @@
 require "stringio"
+require_relative "captures_output"
 
 class TestHarness
+  include CapturesOutput
 
   attr_writer :parser
 
@@ -15,8 +17,8 @@ class TestHarness
   def parse!(argv)
     status = nil
     @output = StringIO.new
-    capture_stdout do
-      capture_stderr do
+    capture_stdout(@output) do
+      capture_stderr(@output) do
         begin
           @parser.parse!(argv)
         rescue SystemExit => e
@@ -29,26 +31,4 @@ class TestHarness
     end
   end
 
-  private
-
-  def capture_stdout
-    orig_stdout = $stdout
-    $stdout = @output
-    begin
-      yield
-    ensure
-      $stdout = orig_stdout
-    end
-  end
-
-  def capture_stderr
-    orig_stderr = $stderr
-    $stderr = @output
-    begin
-      yield
-    ensure
-      $stderr = orig_stderr
-    end
-  end
-  
 end

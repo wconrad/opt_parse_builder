@@ -151,14 +151,20 @@ module OptParseBuilder
     # Although it's called a "line," you can embed new-lines in it so
     # that it is actually more than one line.
     #
+    # The footer: parameter controls where the text appears:
+    # * footer: true (default in v1.x) - text appears at bottom
+    #   (DEPRECATED: use footer method instead)
+    # * footer: false - text appears positionally between options
+    #   (will be default in v2.0.0)
+    #
     # This example:
     #
     #     arg_parser = OptParseBuilder.build_parser do |args|
-    #       args.separator "Here I explain more about my program"
-    #       args.separator <<~SEPARATOR
+    #       args.footer "Here I explain more about my program"
+    #       args.footer <<~FOOTER
     #         For such a small program,
     #         it has a lot of text at the end.
-    #       SEPARATOR
+    #       FOOTER
     #     end
     #     arg_parser.parse!(["--help"])
     #
@@ -168,9 +174,42 @@ module OptParseBuilder
     #     Here I explain more about my program
     #     For such a small program,
     #     it has a lot of text at the end.
-    def separator(line)
+    def separator(line, footer: true)
       add do |arg|
-        arg.separator(line)
+        arg.separator(line, footer: footer)
+      end
+    end
+
+    # Add a line to the footer.  The footer is text that appears
+    # at the bottom of the help text.
+    #
+    # A new-line will automatically be added to the end of the line.
+    # Although it's called a "line," you can embed new-lines in it so
+    # that it is actually more than one line.
+    #
+    # This is the recommended way to add text at the bottom of help
+    # output in v1.1.0 and later.
+    #
+    # This example:
+    #
+    #     arg_parser = OptParseBuilder.build_parser do |args|
+    #       args.footer "Here I explain more about my program"
+    #       args.footer <<~FOOTER
+    #         For such a small program,
+    #         it has a lot of text at the end.
+    #       FOOTER
+    #     end
+    #     arg_parser.parse!(["--help"])
+    #
+    # Results in `--help` output like this:
+    #
+    #     Usage: example [options] <path>
+    #     Here I explain more about my program
+    #     For such a small program,
+    #     it has a lot of text at the end.
+    def footer(line)
+      add do |arg|
+        arg.footer(line)
       end
     end
 
@@ -313,10 +352,15 @@ module OptParseBuilder
     def optparse
       op = OptParse.new
       op.banner = banner_prefix + op.banner + banner_suffix
-      @arguments.each { |arg| arg.apply_option(op) }
-      @arguments.each do |argument|
-        argument.separator_lines.each do |line|
+      @arguments.each do |arg|
+        arg.apply_option(op)
+        arg.separator_lines.each do |line|
           op.separator(line)
+        end
+      end
+      @arguments.each do |argument|
+        argument.footer_lines.each do |line|
+          op.on_tail(line)
         end
       end
       op

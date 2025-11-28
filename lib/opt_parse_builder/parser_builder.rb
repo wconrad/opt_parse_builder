@@ -11,7 +11,7 @@ module OptParseBuilder
       @parser = Parser.new
     end
 
-    def_delegators :@parser,  :add, :banner, :separator
+    def_delegators :@parser,  :add, :banner, :separator, :footer
 
   end
 end

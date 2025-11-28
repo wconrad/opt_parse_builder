@@ -62,7 +62,7 @@ arg_parser = OptParseBuilder.build_parser do |args|
     arg.key :verbose
     arg.on "-v", "--verbose", "Be verbose"
   end
-  args.separator "Some explanatory text at the bottom"
+  args.footer "Some explanatory text at the bottom"
 end
 
 arg_values = arg_parser.parse!
@@ -262,27 +262,67 @@ Applicable builder methods:
 
 Banner text can be added to any argument.
 
-## Separator only
+## Footer only
 
-An argument with only separator text (but see
-OptParseBuilder#banner for the usual way to do this).  "Separator"
-is how OptParse describes text that appears at the bottom of the
---help output.
+An argument with only footer text (but see
+OptParseBuilder#footer for the usual way to do this).  Footer text
+appears at the bottom of the --help output.
 
     OptParseBuilder.build_argument do |arg|
-      arg.separator "Separator text"
-      arg.separator "A second line of separator text"
-      arg.separator <<~SEPARATOR
+      arg.footer "Footer text at the bottom"
+      arg.footer "A second line of footer text"
+      arg.footer <<~FOOTER
         A third line
         A fourth line
-      SEPARATOR
+      FOOTER
     end
 
 Applicable builder methods:
 
-* separator
+* footer
 
-Separator text can be added to any argument.
+Footer text can be added to any argument.
+
+## Positional separator
+
+A separator that appears between options in the --help output,
+useful for grouping related options.
+
+    OptParseBuilder.build_argument do |arg|
+      arg.key :verbose
+      arg.on "-v", "--verbose", "Be verbose"
+      arg.separator "--- Advanced options ---", footer: false
+    end
+
+The separator will appear immediately after the option it's
+attached to, allowing you to divide your options into sections.
+
+Applicable builder methods:
+
+* separator (with footer: false parameter)
+
+## Separator only (deprecated)
+
+**Note:** Using `separator` without the `footer:` parameter is
+deprecated in v1.1.0 and will change behavior in v2.0.0. Use
+`footer` for text at the bottom, or `separator(text, footer: false)`
+for positional text.
+
+    # Deprecated - emits warning
+    OptParseBuilder.build_argument do |arg|
+      arg.separator "Text at bottom"
+    end
+
+    # Recommended alternatives:
+    # For bottom text:
+    OptParseBuilder.build_argument do |arg|
+      arg.footer "Text at bottom"
+    end
+
+    # For positional text:
+    OptParseBuilder.build_argument do |arg|
+      arg.separator "Between options", footer: false
+    end
 
 ## Constant value
 

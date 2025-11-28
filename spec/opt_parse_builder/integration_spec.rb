@@ -228,12 +228,14 @@ describe "integration tests" do
 
   end
 
-  describe "Separator outside of an argument" do
+  describe "Separator outside of an argument (deprecated)" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |args|
-        args.separator "Text at the end"
-        args.separator "More text at the end"
+      suppress_deprecation_warnings do
+        OptParseBuilder.build_parser do |args|
+          args.separator "Text at the end"
+          args.separator "More text at the end"
+        end
       end
     end
 
@@ -249,13 +251,15 @@ describe "integration tests" do
     end
   end
 
-  describe "Separator only" do
+  describe "Separator only (deprecated)" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
-          arg.separator "Text at the end"
-          arg.separator "More text at the end"
+      suppress_deprecation_warnings do
+        OptParseBuilder.build_parser do |args|
+          args.add do |arg|
+            arg.separator "Text at the end"
+            arg.separator "More text at the end"
+          end
         end
       end
     end
@@ -267,6 +271,131 @@ describe "integration tests" do
         Usage: rspec [options]
         Text at the end
         More text at the end
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "Footer outside of an argument" do
+
+    let(:parser) do
+      OptParseBuilder.build_parser do |args|
+        args.footer "Text at the end"
+        args.footer "More text at the end"
+      end
+    end
+
+    it "prints help" do
+      test_harness.parser = parser
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+        Text at the end
+        More text at the end
+        (exit 0)
+      OUTPUT
+    end
+  end
+
+  describe "Footer only" do
+
+    let(:parser) do
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
+          arg.footer "Text at the end"
+          arg.footer "More text at the end"
+        end
+      end
+    end
+
+    it "prints help" do
+      test_harness.parser = parser
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+        Text at the end
+        More text at the end
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "Option with footer" do
+
+    let(:parser) do
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "-f", "--foo", "Do the foo thing"
+          arg.footer "Footer text for foo"
+        end
+      end
+    end
+
+    it "prints help" do
+      test_harness.parser = parser
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+            -f, --foo                        Do the foo thing
+        Footer text for foo
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "Separator with footer: false (positional)" do
+
+    let(:parser) do
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "-f", "--foo", "Do the foo thing"
+          arg.separator "Positional separator text", footer: false
+        end
+      end
+    end
+
+    it "prints help" do
+      test_harness.parser = parser
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+            -f, --foo                        Do the foo thing
+        Positional separator text
+        (exit 0)
+      OUTPUT
+    end
+
+  end
+
+  describe "Positional separator between two options" do
+
+    let(:parser) do
+      OptParseBuilder.build_parser do |args|
+        args.add do |arg|
+          arg.key :foo
+          arg.on "-f", "--foo", "First option"
+          arg.separator "--- Section divider ---", footer: false
+        end
+        args.add do |arg|
+          arg.key :bar
+          arg.on "-b", "--bar", "Second option"
+        end
+      end
+    end
+
+    it "shows separator between the two options" do
+      test_harness.parser = parser
+      test_harness.parse!(["-h"])
+      expect(test_harness.output).to eq <<~OUTPUT
+        Usage: rspec [options]
+            -f, --foo                        First option
+        --- Section divider ---
+            -b, --bar                        Second option
         (exit 0)
       OUTPUT
     end
@@ -298,14 +427,16 @@ describe "integration tests" do
 
   end
 
-  describe "Option with separator" do
+  describe "Option with separator (deprecated)" do
 
     let(:parser) do
-      OptParseBuilder.build_parser do |args|
-        args.add do |arg|
-          arg.key :foo
-          arg.on "-f", "--foo", "Do the foo thing"
-          arg.separator "Separator text for foo"
+      suppress_deprecation_warnings do
+        OptParseBuilder.build_parser do |args|
+          args.add do |arg|
+            arg.key :foo
+            arg.on "-f", "--foo", "Do the foo thing"
+            arg.separator "Separator text for foo"
+          end
         end
       end
     end
@@ -1589,8 +1720,10 @@ describe "integration tests" do
   describe "Convert separator argument to operand" do
 
     let(:arg) do
-      OptParseBuilder.build_argument do |arg|
-        arg.separator "separator"
+      suppress_deprecation_warnings do
+        OptParseBuilder.build_argument do |arg|
+          arg.separator "separator"
+        end
       end
     end
 
