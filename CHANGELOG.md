@@ -2,6 +2,9 @@
 
 # Development
 
+# 1.0.0 - 2025-11-28
+
+* Declare API stability by bumping version to 1.0.0
 * Update gems
 * Update Ruby to 3.4.7
 
