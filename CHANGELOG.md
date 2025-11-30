@@ -2,6 +2,8 @@
 
 # Development
 
+# 1.1.1 - 2025-11-29
+
 * Fixed ArgumentValues#respond_to?
 
 # 1.1.0 - 2025-11-28
