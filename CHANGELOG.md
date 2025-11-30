@@ -2,6 +2,8 @@
 
 # Development
 
+* Fixed ArgumentValues#respond_to?
+
 # 1.1.0 - 2025-11-28
 
 * Add footer method for text at bottom of help output (recommended)

@@ -55,6 +55,10 @@ module OptParseBuilder
       return super unless has_key?(method)
       self[method]
     end
-    
+
+    def respond_to_missing?(method, include_private = false) # :nodoc:
+      has_key?(method) || super
+    end
+
   end
 end

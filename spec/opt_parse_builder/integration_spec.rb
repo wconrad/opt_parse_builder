@@ -944,6 +944,18 @@ describe "integration tests" do
       end.to raise_error NoMethodError, /\bbar\b/
     end
 
+    it "responds to methods for keys that exist (symbol)" do
+      expect(arg_values.respond_to?(:foo)).to be_truthy
+    end
+
+    it "responds to methods for keys that exist (string)" do
+      expect(arg_values.respond_to?("foo")).to be_truthy
+    end
+
+    it "does not respond to methods for keys that don't exist" do
+      expect(arg_values.respond_to?(:bar)).to be_falsey
+    end
+
   end
 
   describe "parse! returns a value collection" do
